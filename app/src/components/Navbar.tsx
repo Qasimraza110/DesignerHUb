@@ -7,7 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const { user, isLoggedIn, logout } = useAuth();
+  const { user, isLoggedIn, isLoading, logout } = useAuth();
 
   return (
     <nav className="bg-white shadow-md">
@@ -34,7 +34,9 @@ export default function Navbar() {
               Contact
             </Link>
 
-            {isLoggedIn ? (
+            {isLoading ? (
+              <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
+            ) : isLoggedIn ? (
               <div className="relative">
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
@@ -82,7 +84,7 @@ export default function Navbar() {
                   Sign Up
                 </Link>
                 <Link
-                  href="/register"
+                  href="/login"
                   className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
                 >
                   Login
@@ -176,7 +178,7 @@ export default function Navbar() {
                     Sign Up
                   </Link>
                   <Link
-                    href="/register"
+                    href="/login"
                     className="block px-3 py-2 bg-blue-600 text-white rounded-md text-center hover:bg-blue-700 transition-colors"
                     onClick={() => setIsOpen(false)}
                   >

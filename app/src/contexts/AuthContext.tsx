@@ -12,6 +12,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isLoggedIn: boolean;
+  isLoading: boolean;
   login: (userData: User) => void;
   logout: () => void;
 }
@@ -20,6 +21,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Check if user is logged in on mount
@@ -29,6 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (storedUser && isLoggedIn) {
       setUser(JSON.parse(storedUser));
     }
+    setIsLoading(false);
   }, []);
 
   const login = (userData: User) => {
@@ -46,6 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value = {
     user,
     isLoggedIn: !!user,
+    isLoading,
     login,
     logout,
   };

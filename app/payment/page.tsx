@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '../src/contexts/AuthContext';
 
-export default function Payment() {
+function PaymentContent() {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -253,5 +253,13 @@ export default function Payment() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function Payment() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <PaymentContent />
+    </Suspense>
   );
 }

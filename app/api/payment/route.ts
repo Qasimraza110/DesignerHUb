@@ -73,7 +73,9 @@ export async function POST(request: NextRequest) {
       `,
     });
 
-    // Email to admin
+    // Email to admin with approval button
+    const approvalUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/payments/approve/${newPayment._id}`;
+
     await transporter.sendMail({
       from: process.env.SMTP_USER,
       to: process.env.ADMIN_EMAIL,
@@ -94,7 +96,17 @@ export async function POST(request: NextRequest) {
             <li>Account/Mobile: ${paymentData.accountNumber}</li>
             <li>Transaction ID: ${paymentData.transactionId}</li>
           </ul>
-          <p>Please review the payment and approve/reject accordingly.</p>
+          <div style="margin: 30px 0;">
+            <a href="${approvalUrl}?action=approve"
+               style="background-color: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block; margin-right: 10px;">
+              ✅ Approve Payment
+            </a>
+            <a href="${approvalUrl}?action=reject"
+               style="background-color: #dc2626; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+              ❌ Reject Payment
+            </a>
+          </div>
+          <p>Please review the payment details and click the appropriate button above.</p>
           <br>
           <p>Designer's Hub Admin</p>
         </div>

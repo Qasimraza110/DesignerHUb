@@ -1,20 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
-
-// Mock user database - in production, use a real database
-const users = [
-  {
-    id: '1',
-    email: 'admin@designershub.com',
-    password: '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-    fullName: 'Admin User',
-    course: 'All Courses'
-  }
-];
-
-// Store reset tokens temporarily (in production, use Redis or database)
-const resetTokens = new Map<string, { email: string; expires: Date }>();
+import connectToDatabase from '../../../lib/mongodb';
+import User from '../../../models/User';
 
 // Email configuration
 const transporter = nodemailer.createTransport({
@@ -29,6 +17,8 @@ const transporter = nodemailer.createTransport({
 
 export async function POST(request: NextRequest) {
   try {
+    await connectToDatabase();
+
     const { email } = await request.json();
 
     if (!email) {
@@ -39,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user exists
-    const user = users.find(u => u.email === email);
+    const user = await User.findOne({ email });
 
     if (!user) {
       // Don't reveal if email exists or not for security
@@ -52,8 +42,10 @@ export async function POST(request: NextRequest) {
     const resetToken = crypto.randomBytes(32).toString('hex');
     const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-    // Store token (in production, save to database)
-    resetTokens.set(resetToken, { email, expires });
+    // Store token in database
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = expires;
+    await user.save();
 
     // Send email
     const resetUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/reset-password?token=${resetToken}`;

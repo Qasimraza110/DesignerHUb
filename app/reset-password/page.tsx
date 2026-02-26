@@ -1,39 +1,26 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { useAuth } from '../src/contexts/AuthContext';
 
-export default function Register() {
+export default function ResetPassword() {
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
     password: '',
     confirmPassword: '',
-    course: '',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const router = useRouter();
-  const { login, isLoggedIn, isLoading: authLoading } = useAuth();
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
 
   useEffect(() => {
-    if (!authLoading && isLoggedIn) {
-      router.push('/dashboard');
+    if (!token) {
+      setError('Invalid reset link');
     }
-  }, [isLoggedIn, authLoading, router]);
-
-  if (authLoading) {
-    return <div className="py-16 bg-gray-50 flex justify-center items-center">Loading...</div>;
-  }
-
-  if (isLoggedIn) {
-    return null; // Will redirect
-  }
-
-  // Removed payment check logic to allow normal registration
+  }, [token]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -44,6 +31,12 @@ export default function Register() {
     setIsLoading(true);
     setError('');
     setSuccess('');
+
+    if (!token) {
+      setError('Invalid reset link');
+      setIsLoading(false);
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
@@ -58,28 +51,24 @@ export default function Register() {
     }
 
     try {
-      const response = await fetch('/api/auth/signup', {
+      const response = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          fullName: formData.fullName,
-          email: formData.email,
-          password: formData.password,
-          course: formData.course || 'General Course',
+          token,
+          newPassword: formData.password,
         }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setSuccess('Account created successfully! You can now log in.');
-        // Auto login the user
-        login(data.user);
+        setSuccess('Password reset successfully! You can now log in with your new password.');
         setTimeout(() => {
-          router.push('/dashboard');
-        }, 2000);
+          router.push('/login');
+        }, 3000);
       } else {
         setError(data.error || 'Something went wrong');
       }
@@ -90,10 +79,28 @@ export default function Register() {
     }
   };
 
+  if (!token) {
+    return (
+      <div className="py-16 bg-gray-50">
+        <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+          <h1 className="text-2xl font-bold mb-6 text-center">Invalid Reset Link</h1>
+          <p className="text-gray-600 text-center mb-4">
+            The password reset link is invalid or has expired.
+          </p>
+          <div className="text-center">
+            <Link href="/forgot-password" className="text-blue-600 hover:text-blue-500">
+              Request a new password reset
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="py-16 bg-gray-50">
       <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Register</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Reset Password</h1>
 
         {success && (
           <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md mb-4">
@@ -109,29 +116,7 @@ export default function Register() {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Full Name</label>
-            <input
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Password</label>
+            <label className="block text-gray-700 mb-2">New Password</label>
             <input
               type="password"
               name="password"
@@ -142,7 +127,7 @@ export default function Register() {
             />
           </div>
           <div className="mb-6">
-            <label className="block text-gray-700 mb-2">Confirm Password</label>
+            <label className="block text-gray-700 mb-2">Confirm New Password</label>
             <input
               type="password"
               name="confirmPassword"
@@ -157,20 +142,15 @@ export default function Register() {
             disabled={isLoading}
             className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Creating Account...' : 'Register'}
+            {isLoading ? 'Resetting Password...' : 'Reset Password'}
           </button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-gray-600">
-            Already have an account?{' '}
+            Remember your password?{' '}
             <Link href="/login" className="text-blue-600 hover:text-blue-500">
               Login here
-            </Link>
-          </p>
-          <p className="text-gray-600 mt-2">
-            <Link href="/forgot-password" className="text-blue-600 hover:text-blue-500">
-              Forgot your password?
             </Link>
           </p>
         </div>

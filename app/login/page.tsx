@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '../src/contexts/AuthContext';
@@ -13,7 +13,21 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, isLoggedIn, isLoading: authLoading } = useAuth();
+
+  useEffect(() => {
+    if (!authLoading && isLoggedIn) {
+      router.push('/dashboard');
+    }
+  }, [isLoggedIn, authLoading, router]);
+
+  if (authLoading) {
+    return <div className="py-16 bg-gray-50 flex justify-center items-center">Loading...</div>;
+  }
+
+  if (isLoggedIn) {
+    return null; // Will redirect
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

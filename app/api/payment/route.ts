@@ -73,10 +73,10 @@ export async function POST(request: NextRequest) {
       `,
     });
 
-    // Email to admin with approval button
+    // Email to admin with approval button and screenshot attachment
     const approvalUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/payments/approve/${newPayment._id}`;
 
-    await transporter.sendMail({
+    const mailOptions: any = {
       from: process.env.SMTP_USER,
       to: process.env.ADMIN_EMAIL,
       subject: 'New Payment Submission - Designer\'s Hub',
@@ -96,6 +96,7 @@ export async function POST(request: NextRequest) {
             <li>Account/Mobile: ${paymentData.accountNumber}</li>
             <li>Transaction ID: ${paymentData.transactionId}</li>
           </ul>
+          <p><strong>Payment Screenshot:</strong> Attached to this email for verification.</p>
           <div style="margin: 30px 0;">
             <a href="${approvalUrl}?action=approve"
                style="background-color: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block; margin-right: 10px;">
@@ -106,12 +107,24 @@ export async function POST(request: NextRequest) {
               ❌ Reject Payment
             </a>
           </div>
-          <p>Please review the payment details and click the appropriate button above.</p>
+          <p>Please review the payment details and attached screenshot, then click the appropriate button above.</p>
           <br>
           <p>Designer's Hub Admin</p>
         </div>
       `,
-    });
+    };
+
+    // Attach screenshot if provided
+    if (paymentData.screenshot) {
+      const screenshotBuffer = Buffer.from(await paymentData.screenshot.arrayBuffer());
+      mailOptions.attachments = [{
+        filename: `payment_screenshot_${paymentData.transactionId || 'unknown'}.png`,
+        content: screenshotBuffer,
+        contentType: paymentData.screenshot.type || 'image/png'
+      }];
+    }
+
+    await transporter.sendMail(mailOptions);
 
     return NextResponse.json({ success: true, message: 'Payment submitted successfully' });
   } catch (error) {

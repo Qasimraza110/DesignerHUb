@@ -1,19 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-
-// Mock user database - in production, use a real database
-let users = [
-  {
-    id: '1',
-    email: 'admin@designershub.com',
-    password: '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password: password
-    fullName: 'Admin User',
-    course: 'All Courses'
-  }
-];
+import connectToDatabase from '../../../lib/mongodb';
+import User from '../../../models/User';
 
 export async function POST(request: NextRequest) {
   try {
+    await connectToDatabase();
+
     const { fullName, email, password, course } = await request.json();
 
     if (!fullName || !email || !password || !course) {
@@ -24,7 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user already exists
-    const existingUser = users.find(u => u.email === email);
+    const existingUser = await User.findOne({ email });
 
     if (existingUser) {
       return NextResponse.json(
@@ -37,19 +30,22 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create new user
-    const newUser = {
-      id: (users.length + 1).toString(),
+    const newUser = new User({
+      fullName,
       email,
       password: hashedPassword,
-      fullName,
-      course
-    };
+      course,
+    });
 
-    // Add to users array (in production, save to database)
-    users.push(newUser);
+    await newUser.save();
 
     // Return user data (without password)
-    const { password: _, ...userWithoutPassword } = newUser;
+    const userWithoutPassword = {
+      id: newUser._id.toString(),
+      fullName: newUser.fullName,
+      email: newUser.email,
+      course: newUser.course,
+    };
 
     return NextResponse.json({
       message: 'User created successfully',

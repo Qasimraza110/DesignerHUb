@@ -1,22 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-
-// Mock user database - in production, use a real database
-const users = [
-  {
-    id: '1',
-    email: 'admin@designershub.com',
-    password: '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password: password
-    fullName: 'Admin User',
-    course: 'All Courses'
-  }
-];
+import connectToDatabase from '../../../lib/mongodb';
+import User from '../../../models/User';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export async function POST(request: NextRequest) {
   try {
+    await connectToDatabase();
+
     const { email, password } = await request.json();
 
     if (!email || !password) {
@@ -27,7 +20,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Find user by email
-    const user = users.find(u => u.email === email);
+    const user = await User.findOne({ email });
 
     if (!user) {
       return NextResponse.json(
@@ -48,13 +41,18 @@ export async function POST(request: NextRequest) {
 
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user.id, email: user.email },
+      { userId: user._id.toString(), email: user.email },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
 
     // Return user data (without password)
-    const { password: _, ...userWithoutPassword } = user;
+    const userWithoutPassword = {
+      id: user._id.toString(),
+      fullName: user.fullName,
+      email: user.email,
+      course: user.course,
+    };
 
     return NextResponse.json({
       message: 'Login successful',

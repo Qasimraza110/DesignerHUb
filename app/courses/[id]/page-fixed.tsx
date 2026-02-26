@@ -3,14 +3,13 @@ import Link from 'next/link';
 import { COURSES } from '../../src/constants';
 
 interface CourseDetailPageProps {
-  params: Promise<{
+  params: {
     id: string;
-  }>;
+  };
 }
 
-export default async function CourseDetailPage({ params }: CourseDetailPageProps) {
-  const resolvedParams = await params;
-  const courseId = parseInt(resolvedParams.id);
+export default function CourseDetailPage({ params }: CourseDetailPageProps) {
+  const courseId = parseInt(params.id);
   const course = COURSES.find(c => c.id === courseId);
 
   if (!course) {

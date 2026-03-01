@@ -1,197 +1,290 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { SITE_CONFIG } from '../../src/constants';
+import { useState } from "react";
+import {
+  MapPin,
+  Mail,
+  Clock,
+  Send,
+  Facebook,
+  Instagram,
+  Linkedin,
+  Twitter,
+} from "lucide-react";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: "" }); // clear error when typing
   };
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState('');
-  const [submitError, setSubmitError] = useState('');
+  const validateForm = () => {
+    let tempErrors: typeof errors = {
+      name: "",
+      email: "",
+      subject: "",
+      message: "",
+    };
+    let isValid = true;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+    if (!formData.name.trim()) {
+      tempErrors.name = "Full name is required";
+      isValid = false;
+    }
+
+    if (!formData.email.trim()) {
+      tempErrors.email = "Email is required";
+      isValid = false;
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)
+    ) {
+      tempErrors.email = "Invalid email address";
+      isValid = false;
+    }
+
+    if (!formData.subject.trim()) {
+      tempErrors.subject = "Subject is required";
+      isValid = false;
+    }
+
+    if (!formData.message.trim()) {
+      tempErrors.message = "Message is required";
+      isValid = false;
+    }
+
+    setErrors(tempErrors);
+    return isValid;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setSubmitError('');
-    setSubmitMessage('');
-
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+    if (validateForm()) {
+      alert("Message sent successfully!");
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setSubmitMessage('Thank you for your message! We will get back to you soon.');
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      } else {
-        setSubmitError(data.error || 'Something went wrong');
-      }
-    } catch (err) {
-      setSubmitError('Network error. Please try again.');
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
-    <div className="py-16 bg-gray-50 min-h-screen">
+    <div className="bg-gray-50 min-h-screen py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Contact Us</h1>
-          <p className="text-xl text-gray-600">Get in touch with our team</p>
+        {/* ===== HERO ===== */}
+        <div className="text-center mb-20">
+          <span className="text-sm text-indigo-600 font-medium bg-indigo-50 px-4 py-1 rounded-full">
+            Contact Us
+          </span>
+
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mt-6">
+            Get In <span className="text-indigo-600">Touch</span>
+          </h1>
+
+          <p className="text-gray-500 mt-6 max-w-2xl mx-auto">
+            Have questions about our courses or want to learn more? We're here
+            to help you start your design journey.
+          </p>
         </div>
 
+        {/* ===== TOP INFO CARDS ===== */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+          {[
+            {
+              icon: MapPin,
+              title: "Visit Us",
+              text: "Gulshan Ravi Lahore",
+            },
+            {
+              icon: Mail,
+              title: "Email Us",
+              text: "designerhubcourses@gmail.com",
+            },
+            {
+              icon: Clock,
+              title: "Working Hours",
+              text: "Mon - Fri: 9AM - 6PM\nSat: 10AM - 4PM",
+            },
+          ].map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={index}
+                className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm text-center"
+              >
+                <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center rounded-full bg-indigo-50 text-indigo-600">
+                  <Icon size={22} />
+                </div>
+
+                <h3 className="font-semibold text-gray-900 mb-2">
+                  {item.title}
+                </h3>
+
+                <p className="text-sm text-gray-500 whitespace-pre-line">
+                  {item.text}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ===== FORM + RIGHT SIDE ===== */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact Information */}
-          <div className="bg-white p-8 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-6">Get In Touch</h2>
-            <div className="space-y-6">
-              <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0">
-                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </div>
+          {/* LEFT FORM */}
+          <div className="bg-white text-black rounded-xl shadow-sm border border-gray-100 p-8">
+            <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
+              <Send size={18} /> Send Us a Message
+            </h2>
+
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900">Address</h3>
-                  <p className="text-gray-600">{SITE_CONFIG.address}</p>
+                  <input
+                    name="name"
+                    placeholder="Full Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className={`w-full border rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 ${
+                      errors.name
+                        ? "border-red-500 focus:ring-red-500 text-red-600"
+                        : "border-gray-200 focus:ring-indigo-500 text-gray-900"
+                    }`}
+                  />
+                  {errors.name && (
+                    <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                  )}
                 </div>
-              </div>
 
-              <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0">
-                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                  </svg>
-                </div>
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900">Phone</h3>
-                  <p className="text-gray-600">{SITE_CONFIG.phone}</p>
+                  <input
+                    name="email"
+                    placeholder="Email Address"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={`w-full border rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 ${
+                      errors.email
+                        ? "border-red-500 focus:ring-red-500 text-red-600"
+                        : "border-gray-200 focus:ring-indigo-500 text-gray-900"
+                    }`}
+                  />
+                  {errors.email && (
+                    <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                  )}
                 </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0">
-                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900">Email</h3>
-                  <p className="text-gray-600">{SITE_CONFIG.email}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Contact Form */}
-          <div className="bg-white p-8 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-6">Send us a Message</h2>
-
-            {submitMessage && (
-              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md mb-6">
-                {submitMessage}
-              </div>
-            )}
-
-            {submitError && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-6">
-                {submitError}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Your full name"
-                />
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address
-                </label>
                 <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="your@email.com"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  id="subject"
                   name="subject"
+                  placeholder="Subject"
                   value={formData.subject}
                   onChange={handleChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="What's this about?"
+                  className={`w-full border rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 ${
+                    errors.subject
+                      ? "border-red-500 focus:ring-red-500 text-red-600"
+                      : "border-gray-200 focus:ring-indigo-500 text-gray-900"
+                  }`}
                 />
+                {errors.subject && (
+                  <p className="text-red-500 text-xs mt-1">{errors.subject}</p>
+                )}
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                  Message
-                </label>
                 <textarea
-                  id="message"
                   name="message"
+                  rows={5}
+                  placeholder="Write your message here..."
                   value={formData.message}
                   onChange={handleChange}
-                  required
-                  rows={5}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
-                  placeholder="Tell us how we can help you..."
+                  className={`w-full border rounded-lg px-4 py-3 text-sm outline-none focus:ring-2 ${
+                    errors.message
+                      ? "border-red-500 focus:ring-red-500 text-red-600"
+                      : "border-gray-200 focus:ring-indigo-500 text-gray-900"
+                  }`}
                 />
+                {errors.message && (
+                  <p className="text-red-500 text-xs mt-1">{errors.message}</p>
+                )}
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 transition-colors font-medium"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition"
               >
-                Send Message
+                <Send size={16} /> Send Message
               </button>
             </form>
+          </div>
+
+          {/* RIGHT SIDE */}
+          <div className="space-y-8">
+            {/* MAP */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+              <iframe
+                src="https://www.google.com/maps?q=Lahore&output=embed"
+                width="100%"
+                height="250"
+                loading="lazy"
+              ></iframe>
+            </div>
+
+            {/* FOLLOW US */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+              <h3 className="font-semibold text-gray-900 mb-4">Follow Us</h3>
+
+              <div className="flex gap-4 text-gray-500">
+                <Facebook className=" hover:text-indigo-600" />
+                <Instagram className="hover:text-indigo-600" />
+                <Linkedin className="hover:text-indigo-600" />
+              </div>
+            </div>
+
+            {/* QUICK ANSWERS */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+              <h3 className="font-semibold text-gray-900 mb-4">
+                Quick Answers
+              </h3>
+
+              <div className="space-y-4 text-sm text-gray-500">
+                <div>
+                  <p className="font-medium text-gray-700">
+                    How do I enroll in a course?
+                  </p>
+                  <p>
+                    Browse courses, select your choice, and complete payment to
+                    register.
+                  </p>
+                </div>
+
+                <div>
+                  <p className="font-medium text-gray-700">
+                    What payment methods are accepted?
+                  </p>
+                  <p>
+                    We accept Bank Transfer, JazzCash
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

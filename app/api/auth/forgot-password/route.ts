@@ -4,11 +4,10 @@ import crypto from 'crypto';
 import connectToDatabase from '../../../lib/mongodb';
 import User from '../../../models/User';
 
-// Email configuration
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
   port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: false, // true for 465, false for other ports
+  secure: false, 
   auth: {
     user: process.env.SMTP_USER || 'your-email@gmail.com',
     pass: process.env.SMTP_PASS || 'your-app-password',
@@ -28,26 +27,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user exists
+
     const user = await User.findOne({ email });
 
     if (!user) {
-      // Don't reveal if email exists or not for security
       return NextResponse.json({
         message: 'If an account with that email exists, a password reset link has been sent.'
       });
     }
 
-    // Generate reset token
     const resetToken = crypto.randomBytes(32).toString('hex');
-    const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const expires = new Date(Date.now() + 10 * 60 * 1000);
 
-    // Store token in database
     user.resetPasswordToken = resetToken;
     user.resetPasswordExpires = expires;
     await user.save();
 
-    // Send email
     const resetUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/reset-password?token=${resetToken}`;
 
     const mailOptions = {

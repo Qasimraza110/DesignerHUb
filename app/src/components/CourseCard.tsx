@@ -1,14 +1,17 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useAuth } from '../contexts/AuthContext';
-
+import Link from "next/link";
+import { useAuth } from "../contexts/AuthContext";
+import { Button } from "./ui/Button";
+import { Clock, Star, Users, ArrowRight } from "lucide-react";
 interface Course {
   id: number;
   title: string;
   duration: string;
   price: string;
   image: string;
+  level?: string;
+  category?: string;
 }
 
 interface CourseCardProps {
@@ -19,37 +22,93 @@ export default function CourseCard({ course }: CourseCardProps) {
   const { isLoggedIn } = useAuth();
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-      <div className="h-48 bg-gray-200 flex items-center justify-center">
-        {/* Placeholder for image */}
-        <span className="text-gray-500">Course Image</span>
+    <div
+      className="
+        group relative overflow-hidden
+        rounded-2xl bg-white
+        border border-gray-200
+        shadow-sm
+        transition-all duration-300
+        hover:-translate-y-1 hover:shadow-lg
+      "
+    >
+      {/* ===== Header / Image ===== */}
+      <div className="relative h-44 overflow-hidden rounded-t-2xl">
+        <img
+          src={course.image}
+          alt={course.title}
+          className="w-full h-full object-cover"
+        />
+        {/* Category Badge */}
+        {course.category && (
+          <span className="absolute top-4 left-4 bg-white/90 backdrop-blur text-xs font-medium px-3 py-1 rounded-full shadow">
+            {course.category}
+          </span>
+        )}
+
+        {/* Level Badge */}
+        {course.level && (
+          <span className="absolute  text-gray-950 top-4 right-4 bg-yellow-400 text-xs font-semibold px-3 py-1 rounded-full shadow">
+            {course.level}
+          </span>
+        )}
       </div>
+
+      {/* ===== Content ===== */}
       <div className="p-6">
-        <Link href={`/courses/${course.id}`} className="block">
-          <h3 className="text-xl font-semibold mb-2 hover:text-blue-600 transition-colors">{course.title}</h3>
-        </Link>
-        <p className="text-gray-600 mb-2">Duration: {course.duration}</p>
-        <p className="text-2xl font-bold text-blue-600 mb-4">{course.price}</p>
-        <div className="space-y-2">
-          <Link
-            href={`/courses/${course.id}`}
-            className="block w-full bg-gray-100 text-gray-700 text-center py-2 rounded-md hover:bg-gray-200 transition-colors"
+        {/* Title */}
+        <Link href={`/courses/${course.id}`}>
+          <h3
+            className="
+              text-lg font-semibold text-gray-900
+              mb-2 leading-snug
+              transition-colors
+              group-hover:text-indigo-600
+            "
           >
-            View Details
-          </Link>
+            {course.title}
+          </h3>
+        </Link>
+
+        {/* Description */}
+        <p className="text-sm text-gray-500 leading-relaxed mb-4">
+          Master this course with hands-on projects and expert guidance.
+        </p>
+
+        {/* Stats */}
+        <div className="flex items-center gap-5 text-sm text-gray-500 mb-6">
+          <div className="flex items-center gap-1">
+            <Clock size={15} />
+            <span>{course.duration}</span>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <Users size={15} />
+            <span>215</span>
+          </div>
+
+          <div className="flex items-center gap-1 text-yellow-500">
+            <Star size={15} fill="currentColor" />
+            <span className="text-gray-600">4.9</span>
+          </div>
+        </div>
+
+        {/* Bottom */}
+        <div className="flex items-center justify-between">
+          <p className="text-indigo-600 font-bold text-xl">{course.price}</p>
+
           {isLoggedIn ? (
-            <Link
-              href={`/payment?course=${encodeURIComponent(course.title)}`}
-              className="block w-full bg-blue-600 text-white text-center py-2 rounded-md hover:bg-blue-700 transition-colors"
-            >
-              Enroll
+            <Link href={`/payment?course=${encodeURIComponent(course.title)}`}>
+              <Button size="sm" className="gap-1">
+                Enroll
+                <ArrowRight size={15} />
+              </Button>
             </Link>
           ) : (
-            <Link
-              href="/register"
-              className="block w-full bg-gray-600 text-white text-center py-2 rounded-md hover:bg-gray-700 transition-colors"
-            >
-              Sign In to Enroll
+            <Link href="/register">
+              <Button size="sm" variant="outline">
+                Enroll
+              </Button>
             </Link>
           )}
         </div>

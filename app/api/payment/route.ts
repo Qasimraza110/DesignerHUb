@@ -22,7 +22,6 @@ export async function POST(request: NextRequest) {
       submittedAt: new Date(),
     };
 
-    // Save to MongoDB
     const newPayment = new Payment({
       fullName: paymentData.fullName,
       email: paymentData.email,
@@ -31,14 +30,13 @@ export async function POST(request: NextRequest) {
       accountNumber: paymentData.accountNumber,
       transactionId: paymentData.transactionId,
       amount: paymentData.amount,
-      screenshot: paymentData.screenshot ? 'uploaded' : null, // In a real app, you'd upload to cloud storage
+      screenshot: paymentData.screenshot ? 'uploaded' : null, 
       status: 'pending',
     });
 
     await newPayment.save();
     console.log('Payment saved to database:', newPayment._id);
 
-    // Send email to user
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT || '587'),

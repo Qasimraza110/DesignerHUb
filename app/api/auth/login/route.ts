@@ -19,7 +19,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Find user by email
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -29,7 +28,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check password
     const isValidPassword = await bcrypt.compare(password, user.password);
 
     if (!isValidPassword) {
@@ -39,14 +37,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate JWT token
     const token = jwt.sign(
       { userId: user._id.toString(), email: user.email },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
 
-    // Return user data (without password)
     const userWithoutPassword = {
       id: user._id.toString(),
       fullName: user.fullName,

@@ -31,7 +31,7 @@ const PaymentSchema = new mongoose.Schema({
     required: true,
   },
   screenshot: {
-    type: String, // URL to uploaded screenshot
+    type: String, 
   },
   status: {
     type: String,

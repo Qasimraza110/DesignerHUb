@@ -16,7 +16,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
@@ -26,10 +25,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new user
     const newUser = new User({
       fullName,
       email,
@@ -39,7 +36,6 @@ export async function POST(request: NextRequest) {
 
     await newUser.save();
 
-    // Return user data (without password)
     const userWithoutPassword = {
       id: newUser._id.toString(),
       fullName: newUser.fullName,

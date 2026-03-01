@@ -1,80 +1,131 @@
-'use client';
+"use client";
 
-import { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useAuth } from '../src/contexts/AuthContext';
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAuth } from "../src/contexts/AuthContext";
+import { Button } from "../src/components/ui/Button";
+import { Input } from "../src/components/ui/Input";
+import { Label } from "../src/components/ui/Label";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../src/components/ui/Card";
 
 function PaymentContent() {
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    course: '',
-    paymentMethod: 'bank',
-    accountNumber: '',
-    transactionId: '',
-    amount: '',
+    fullName: "",
+    email: "",
+    course: "",
+    paymentMethod: "bank",
+    accountNumber: "",
+    transactionId: "",
+    amount: "",
     screenshot: null as File | null,
+  });
+  const [errors, setErrors] = useState({
+    fullName: "",
+    email: "",
+    accountNumber: "",
+    transactionId: "",
+    amount: "",
+    screenshot: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useAuth();
 
   useEffect(() => {
     if (user) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        fullName: user.fullName || '',
-        email: user.email || '',
-        course: searchParams.get('course') || '',
+        fullName: user.fullName || "",
+        email: user.email || "",
+        course: searchParams.get("course") || "",
       }));
     }
   }, [user, searchParams]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" })); 
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
-    setFormData({ ...formData, screenshot: file });
+    setFormData((prev) => ({ ...prev, screenshot: file }));
+    setErrors((prev) => ({ ...prev, screenshot: "" }));
+  };
+
+  const validateField = (name: string, value: any) => {
+    switch (name) {
+      case "fullName":
+        return !value.trim() ? "Full name is required" : "";
+      case "email":
+        if (!value.trim()) return "Email is required";
+        if (!/\S+@\S+\.\S+/.test(value)) return "Invalid email";
+        return "";
+      case "accountNumber":
+        return !value.trim() ? "Account/Mobile number is required" : "";
+      case "transactionId":
+        return !value.trim() ? "Transaction ID is required" : "";
+      case "amount":
+        return !value || Number(value) <= 0
+          ? "Amount must be greater than 0"
+          : "";
+      case "screenshot":
+        return !value ? "Payment screenshot is required" : "";
+      default:
+        return "";
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate all fields
+    const newErrors = {
+      fullName: validateField("fullName", formData.fullName),
+      email: validateField("email", formData.email),
+      accountNumber: validateField("accountNumber", formData.accountNumber),
+      transactionId: validateField("transactionId", formData.transactionId),
+      amount: validateField("amount", formData.amount),
+      screenshot: validateField("screenshot", formData.screenshot),
+    };
+    setErrors(newErrors);
+
+    if (Object.values(newErrors).some((err) => err !== "")) return;
+
     setIsSubmitting(true);
-
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append('fullName', formData.fullName);
-      formDataToSend.append('email', formData.email);
-      formDataToSend.append('course', formData.course);
-      formDataToSend.append('paymentMethod', formData.paymentMethod);
-      formDataToSend.append('accountNumber', formData.accountNumber);
-      formDataToSend.append('transactionId', formData.transactionId);
-      formDataToSend.append('amount', formData.amount);
-      if (formData.screenshot) {
-        formDataToSend.append('screenshot', formData.screenshot);
-      }
-
-      const response = await fetch('/api/payment', {
-        method: 'POST',
-        body: formDataToSend,
+      const payload = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key === "screenshot" && value) payload.append(key, value);
+        else payload.append(key, value as string);
       });
 
-      if (response.ok) {
+      const res = await fetch("/api/payment", {
+        method: "POST",
+        body: payload,
+      });
+      if (res.ok) {
         setIsSubmitted(true);
-        setTimeout(() => {
-          router.push('/dashboard');
-        }, 3000);
+        setTimeout(() => router.push("/dashboard"), 3000);
       } else {
-        alert('Failed to submit payment. Please try again.');
+        alert("Failed to submit payment. Try again.");
       }
-    } catch (error) {
-      console.error('Payment submission error:', error);
-      alert('An error occurred. Please try again.');
+    } catch (err) {
+      console.error(err);
+      alert("Network error. Try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -82,175 +133,195 @@ function PaymentContent() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="bg-white p-8 rounded-lg shadow-md text-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+        <Card className="max-w-sm text-center p-6">
           <h2 className="text-2xl font-bold mb-4">Please Sign In</h2>
-          <p className="text-gray-600 mb-4">You need to be signed in to make a payment.</p>
-          <button
-            onClick={() => router.push('/register')}
-            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700"
-          >
+          <p className="text-gray-600 mb-6">
+            You need to sign in to make a payment.
+          </p>
+          <Button onClick={() => router.push("/register")} className="w-full">
             Sign In
-          </button>
-        </div>
+          </Button>
+        </Card>
       </div>
     );
   }
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="bg-white p-8 rounded-lg shadow-md text-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+        <Card className="max-w-md text-center p-8">
           <div className="text-green-500 text-6xl mb-4">✓</div>
-          <h2 className="text-2xl font-bold mb-4">Payment Submitted Successfully!</h2>
+          <h2 className="text-2xl font-bold mb-4">
+            Payment Submitted Successfully!
+          </h2>
           <p className="text-gray-600 mb-4">
-            Your payment details have been submitted for review. You will receive an email confirmation and access to your course once approved.
+            Your payment has been submitted. You will receive a confirmation
+            email once approved.
           </p>
           <p className="text-gray-600">Redirecting to dashboard...</p>
-        </div>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="py-16 bg-gray-50">
-      <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-3xl font-bold mb-6 text-center">Course Enrollment Payment</h1>
-
-        {/* Payment Instructions */}
-        <div className="mb-8 p-6 bg-blue-50 rounded-lg">
-          <h2 className="text-xl font-semibold mb-4">Payment Instructions</h2>
-          <div className="space-y-4">
-            <div>
-              <h3 className="font-semibold">Bank Transfer:</h3>
-              <p>Account Name: Designer's Hub</p>
-              <p>Account Number: 1234-5678-9012-3456</p>
-              <p>Bank: National Bank of Pakistan</p>
-              <p>Branch: Main Branch, Karachi</p>
-            </div>
-            <div>
-              <h3 className="font-semibold">JazzCash/EasyPaisa:</h3>
-              <p>Mobile Number: 0300-1234567</p>
-              <p>Name: Designer's Hub</p>
-            </div>
-            <p className="text-sm text-gray-600">
-              After making the payment, fill the form below with transaction details and upload a screenshot of the payment.
-            </p>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-indigo-200 flex items-center justify-center px-4 py-16">
+      <div className="max-w-6xl w-full flex flex-col md:flex-row gap-8">
+        {/* Logo / Left side */}
+        <div className="flex flex-col items-center md:items-start justify-center md:w-1/3">
+          <img
+            src="/designer.png"
+            alt="Designer's Hub Logo"
+            className="w-20 h-20 mb-4 object-contain"
+          />
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Designer’s Hub
+          </h1>
+          <p className="text-gray-600 text-center md:text-left">
+            Complete your payment to access your course and start learning.
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-gray-700 mb-2">Full Name</label>
-              <input
-                type="text"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 mb-2">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-          </div>
+        {/* Payment Form / Right side */}
+        <Card className="md:w-2/3 w-full p-6 shadow-lg">
+          <CardHeader className="text-center md:text-left">
+            <CardTitle className="text-2xl">Course Payment Details</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col">
+                  <Label htmlFor="fullName">Full Name</Label>
+                  <Input
+                    id="fullName"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    className={errors.fullName ? "border-red-500" : ""}
+                  />
+                  {errors.fullName && (
+                    <p className="text-red-600 text-sm">{errors.fullName}</p>
+                  )}
+                </div>
 
-          <div>
-            <label className="block text-gray-700 mb-2">Selected Course</label>
-            <input
-              type="text"
-              name="course"
-              value={formData.course}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-              readOnly
-            />
-          </div>
+                <div className="flex flex-col">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={errors.email ? "border-red-500" : ""}
+                  />
+                  {errors.email && (
+                    <p className="text-red-600 text-sm">{errors.email}</p>
+                  )}
+                </div>
+              </div>
 
-          <div>
-            <label className="block text-gray-700 mb-2">Payment Method</label>
-            <select
-              name="paymentMethod"
-              value={formData.paymentMethod}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="bank">Bank Transfer</option>
-              <option value="jazzcash">JazzCash</option>
-              <option value="easypaisa">EasyPaisa</option>
-            </select>
-          </div>
+              <div className="flex flex-col">
+                <Label htmlFor="course">Selected Course</Label>
+                <Input
+                  id="course"
+                  name="course"
+                  value={formData.course}
+                  readOnly
+                  className="bg-gray-100 cursor-not-allowed"
+                />
+              </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-gray-700 mb-2">
-                {formData.paymentMethod === 'bank' ? 'Account Number' : 'Mobile Number'}
-              </label>
-              <input
-                type="text"
-                name="accountNumber"
-                value={formData.accountNumber}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 mb-2">Transaction ID</label>
-              <input
-                type="text"
-                name="transactionId"
-                value={formData.transactionId}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-          </div>
+              <div className="flex flex-col">
+                <Label htmlFor="paymentMethod">Payment Method</Label>
+                <select
+                  name="paymentMethod"
+                  value={formData.paymentMethod}
+                  onChange={handleChange}
+                  className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="bank">Bank Transfer</option>
+                  <option value="jazzcash">JazzCash</option>
+                  <option value="easypaisa">EasyPaisa</option>
+                </select>
+              </div>
 
-          <div>
-            <label className="block text-gray-700 mb-2">Amount Paid (PKR)</label>
-            <input
-              type="number"
-              name="amount"
-              value={formData.amount}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col">
+                  <Label htmlFor="accountNumber">
+                    {formData.paymentMethod === "bank"
+                      ? "Account Number"
+                      : "Mobile Number"}
+                  </Label>
+                  <Input
+                    id="accountNumber"
+                    name="accountNumber"
+                    value={formData.accountNumber}
+                    onChange={handleChange}
+                    className={errors.accountNumber ? "border-red-500" : ""}
+                  />
+                  {errors.accountNumber && (
+                    <p className="text-red-600 text-sm">
+                      {errors.accountNumber}
+                    </p>
+                  )}
+                </div>
 
-          <div>
-            <label className="block text-gray-700 mb-2">Payment Screenshot</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            <p className="text-sm text-gray-500 mt-1">Upload a clear screenshot of your payment confirmation</p>
-          </div>
+                <div className="flex flex-col">
+                  <Label htmlFor="transactionId">Transaction ID</Label>
+                  <Input
+                    id="transactionId"
+                    name="transactionId"
+                    value={formData.transactionId}
+                    onChange={handleChange}
+                    className={errors.transactionId ? "border-red-500" : ""}
+                  />
+                  {errors.transactionId && (
+                    <p className="text-red-600 text-sm">
+                      {errors.transactionId}
+                    </p>
+                  )}
+                </div>
+              </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isSubmitting ? 'Submitting...' : 'Submit Payment Details'}
-          </button>
-        </form>
+              <div className="flex flex-col">
+                <Label htmlFor="amount">Amount Paid (PKR)</Label>
+                <Input
+                  id="amount"
+                  name="amount"
+                  type="number"
+                  value={formData.amount}
+                  onChange={handleChange}
+                  className={errors.amount ? "border-red-500" : ""}
+                />
+                {errors.amount && (
+                  <p className="text-red-600 text-sm">{errors.amount}</p>
+                )}
+              </div>
+
+              <div className="flex flex-col">
+                <Label htmlFor="screenshot">Payment Screenshot</Label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="border border-gray-300 rounded-lg px-4 py-3 cursor-pointer focus:ring-2 focus:ring-blue-500"
+                />
+                {errors.screenshot && (
+                  <p className="text-red-600 text-sm">{errors.screenshot}</p>
+                )}
+              </div>
+
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full mt-2"
+              >
+                {isSubmitting ? "Submitting..." : "Submit Payment Details"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
@@ -258,7 +329,13 @@ function PaymentContent() {
 
 export default function Payment() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          Loading...
+        </div>
+      }
+    >
       <PaymentContent />
     </Suspense>
   );

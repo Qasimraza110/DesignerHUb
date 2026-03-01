@@ -5,7 +5,7 @@ import nodemailer from 'nodemailer';
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
   port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: false, // true for 465, false for other ports
+  secure: false, 
   auth: {
     user: process.env.SMTP_USER || 'your-email@gmail.com',
     pass: process.env.SMTP_PASS || 'your-app-password',
@@ -23,7 +23,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Email to developer/admin
     const adminMailOptions = {
       from: `"Designer's Hub Contact" <${process.env.SMTP_USER || 'noreply@designershub.com'}>`,
       to: process.env.ADMIN_EMAIL || 'admin@designershub.com',
@@ -48,7 +47,6 @@ export async function POST(request: NextRequest) {
       `,
     };
 
-    // Confirmation email to user
     const userMailOptions = {
       from: `"Designer's Hub" <${process.env.SMTP_USER || 'noreply@designershub.com'}>`,
       to: email,
@@ -87,7 +85,6 @@ export async function POST(request: NextRequest) {
     };
 
     try {
-      // Send both emails
       await Promise.all([
         transporter.sendMail(adminMailOptions),
         transporter.sendMail(userMailOptions)

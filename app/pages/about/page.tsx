@@ -1,121 +1,177 @@
-import { SITE_CONFIG, FEATURES, TESTIMONIALS } from '../../src/constants';
+import Image from "next/image";
+import Link from "next/link";
+import { Users, BookOpen, Award, Target } from "lucide-react";
 
 export default function About() {
   return (
-    <div className="py-16 bg-gray-50 min-h-screen">
+    <div className="bg-gray-50 min-h-screen py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            About {SITE_CONFIG.name}
+        {/* ===== HERO ===== */}
+        <div className="text-center mb-20">
+          <span className="text-sm text-indigo-600 font-medium bg-indigo-50 px-4 py-1 rounded-full">
+            About Us
+          </span>
+
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mt-6">
+            Empowering Future <span className="text-indigo-600">Designers</span>
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            {SITE_CONFIG.description}. We are passionate about empowering creative minds
-            with the skills and knowledge they need to succeed in the design industry.
+
+          <p className="text-gray-500 mt-6 max-w-2xl mx-auto">
+            Designer’s Hub is an elite online institute offering specialized
+            short computer courses. We prioritize commitment and quality to help
+            you achieve your career goals.
           </p>
         </div>
 
-        {/* Mission Section */}
-        <div className="bg-white rounded-lg shadow-md p-8 md:p-12 mb-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Mission</h2>
-              <p className="text-gray-600 mb-6">
-                At Designers Hub, we believe that everyone has the potential to become a great designer.
-                Our mission is to bridge the gap between aspiring designers and industry professionals by
-                providing high-quality, accessible education that combines theoretical knowledge with
-                practical skills.
-              </p>
-              <p className="text-gray-600">
-                We are committed to creating a supportive learning environment where creativity thrives
-                and innovation is encouraged. Our expert instructors bring years of real-world experience
-                to help you develop the skills you need to succeed.
-              </p>
-            </div>
-            <div className="bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg p-8">
-              <div className="text-center">
-                <div className="text-6xl mb-4">🎨</div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-2">Creative Excellence</h3>
-                <p className="text-gray-600">
-                  Unleash your creativity with our comprehensive design courses
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* ===== STATS ===== */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-24">
+          {[
+            {
+              icon: Users,
+              number: "2,000+",
+              label: "Students Enrolled",
+            },
+            {
+              icon: BookOpen,
+              number: "10+",
+              label: "Courses Offered",
+            },
+            {
+              icon: Award,
+              number: "20+",
+              label: "Expert Instructors",
+            },
+            {
+              icon: Target,
+              number: "98%",
+              label: "Success Rate",
+            },
+          ].map((stat, index) => {
+            const Icon = stat.icon;
 
-        {/* Features Section */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Why Choose Us</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {FEATURES.map((feature, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow">
-                <div className="text-4xl mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Stats Section */}
-        <div className="bg-white rounded-lg shadow-md p-8 md:p-12 mb-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">10,000+</div>
-              <div className="text-gray-600">Students Enrolled</div>
-            </div>
-            <div>
-              <div className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">50+</div>
-              <div className="text-gray-600">Expert Instructors</div>
-            </div>
-            <div>
-              <div className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">95%</div>
-              <div className="text-gray-600">Success Rate</div>
-            </div>
-            <div>
-              <div className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">24/7</div>
-              <div className="text-gray-600">Support Available</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Testimonials Section */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">What Our Students Say</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {TESTIMONIALS.map((testimonial) => (
-              <div key={testimonial.id} className="bg-white rounded-lg shadow-md p-6">
-                <div className="flex items-center mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                    </svg>
-                  ))}
+            return (
+              <div
+                key={index}
+                className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm text-center hover:shadow-md transition"
+              >
+                <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center rounded-full bg-indigo-50 text-indigo-600">
+                  <Icon size={22} />
                 </div>
-                <p className="text-gray-600 mb-4 italic">"{testimonial.content}"</p>
-                <div>
-                  <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                  <div className="text-sm text-gray-500">{testimonial.role} at {testimonial.company}</div>
+
+                <div className="text-2xl font-bold text-gray-900">
+                  {stat.number}
                 </div>
+
+                <div className="text-gray-500 text-sm mt-1">{stat.label}</div>
               </div>
-            ))}
+            );
+          })}
+        </div>
+
+        {/* ===== MISSION SECTION ===== */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
+          {/* Left */}
+          <div>
+            <span className="text-sm text-indigo-600 font-medium bg-indigo-50 px-4 py-1 rounded-full">
+              Our Mission
+            </span>
+
+            <h2 className="text-3xl font-bold text-gray-900 mt-6 mb-6">
+              Where Skill Meets Opportunity
+            </h2>
+
+            <p className="text-gray-600 mb-6">
+              Our mission is to bridge the gap between aspiring designers and
+              industry demands. We provide hands-on, practical training that
+              prepares students for real-world challenges.
+            </p>
+
+            <ul className="space-y-3 text-gray-600">
+              <li>✔ Industry-relevant curriculum</li>
+              <li>✔ Hands-on project experience</li>
+              <li>✔ Career guidance & placement</li>
+              <li>✔ Lifetime learning access</li>
+            </ul>
+          </div>
+
+          {/* Right Image */}
+          <div className="relative">
+            <Image
+              src="/skills.jfif"
+              alt="Team Working"
+              width={600}
+              height={400}
+              className="rounded-2xl shadow-md object-cover"
+            />
+
+            <div className="absolute bottom-4 left-4 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm shadow">
+              ⭐ 4.9/5 Rating
+            </div>
           </div>
         </div>
 
-        {/* Call to Action */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-8 md:p-12 text-center text-white">
-          <h2 className="text-3xl font-bold mb-4">Ready to Start Your Design Journey?</h2>
-          <p className="text-xl mb-8 opacity-90">
-            Join thousands of students who have transformed their careers with our courses.
-          </p>
-          <a
-            href="/courses"
-            className="inline-block bg-white text-blue-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors"
-          >
-            Explore Courses
-          </a>
+        {/* ===== VALUES SECTION ===== */}
+        <div className="text-center mb-20">
+          <span className="text-sm text-indigo-600 font-medium bg-indigo-50 px-4 py-1 rounded-full">
+            Our Values
+          </span>
+
+          <h2 className="text-3xl font-bold text-gray-900 mt-6">
+            What We Stand For
+          </h2>
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-24">
+          {[
+            "Quality Education",
+            "Student Success",
+            "Innovation",
+            "Community",
+          ].map((title, index) => (
+            <div
+              key={index}
+              className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center"
+            >
+              <div className="w-10 h-10 mx-auto mb-4 flex items-center justify-center bg-indigo-100 text-indigo-600 font-bold rounded-full">
+                {index + 1}
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">{title}</h3>
+              <p className="text-gray-500 text-sm">
+                We continuously strive to deliver the highest standards in
+                learning.
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* ===== LEADERSHIP ===== */}
+        <div className="text-center mb-20">
+          <span className="text-sm text-indigo-600 font-medium bg-indigo-50 px-4 py-1 rounded-full">
+            Our Team
+          </span>
+
+          <h2 className="text-3xl font-bold text-gray-900 mt-6">
+            Meet The Leadership
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 justify-center">
+  {[{ name: "Syed Muhammad Ali", role: "Founder & CEO", img: "/ali.jpeg" }].map(
+    (member, index) => (
+      <div key={index} className="text-center">
+        <Image
+          src={member.img}
+          alt={member.name}
+          width={250}
+          height={250}
+          className="rounded-xl mx-auto mb-4 object-cover"
+        />
+        <h3 className="font-semibold text-gray-900">{member.name}</h3>
+        <p className="text-indigo-600 text-sm">{member.role}</p>
+      </div>
+    ),
+  )}
+</div>
       </div>
     </div>
   );

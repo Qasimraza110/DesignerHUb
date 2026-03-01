@@ -1,80 +1,330 @@
-import Link from 'next/link';
-import CourseCard from './src/components/CourseCard';
-import { COURSES } from './src/constants';
+"use client";
 
-const featuredCourses = COURSES.slice(0, 4);
+import Link from "next/link";
+import CourseCard from "./src/components/CourseCard";
+import { Button } from "./src/components/ui/Button";
+import { Card, CardContent } from "./src/components/ui/Card";
+import { FEATURES, TESTIMONIALS, HOW_IT_WORKS } from "./src/constants";
+import { COURSES } from "./src/constants/courses";
+import {
+  ArrowRight,
+  Play,
+  Users,
+  BookOpen,
+  BadgeCheck,
+  Sparkles,
+} from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
+
+const featuredCourses = COURSES.slice(0, 6);
+
+interface StatProps {
+  icon: React.ReactNode;
+  value: string;
+  label: string;
+}
+
+/* ===== STAT COMPONENT ===== */
+function Stat({ icon, value, label }: StatProps) {
+  return (
+    <div className="flex items-center gap-3">
+      <div className="text-indigo-600">{icon}</div>
+      <div>
+        <p className="font-bold text-lg text-gray-900">{value}</p>
+        <p className="text-sm text-gray-600">{label}</p>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
-    <div>
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            Designer's Hub
-          </h1>
-          <p className="text-xl md:text-2xl mb-8">
-            Where Skill Meets Opportunity
-          </p>
-          <div className="flex gap-4 flex-col sm:flex-row">
-            <Link
-              href="/courses"
-              className="bg-white text-blue-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors"
-            >
-              Enroll Now
-            </Link>
-            <a
-              href="https://wa.me/923001234567?text=Hi%20Designer's%20Hub,%20I%20want%20to%20know%20more%20about%20your%20courses"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-green-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
-              </svg>
-              Contact on WhatsApp
-            </a>
+    <div className="min-h-screen bg-[#f9fafb]">
+      {/* ================= HERO ================= */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#f8fafc] to-[#eef2ff] py-28">
+        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center">
+          {/* LEFT */}
+          <div>
+            <span className="inline-flex bg-yellow-400 text-xs font-semibold px-4 py-1 rounded-full mb-6">
+              ✨ Elite Online Institute
+            </span>
+
+            <h1 className="text-[44px] lg:text-[64px] font-extrabold leading-[1.15] text-gray-900">
+              Where <span className="text-indigo-600">Skill</span>
+              <br />
+              Meets Opportunity
+            </h1>
+
+            <p className="mt-6 text-lg text-gray-700 max-w-xl">
+              Specialized short computer courses taught by industry experts.
+              Transform your passion into profession with our commitment-first
+              approach.
+            </p>
+
+            <div className="mt-10 flex gap-4 flex-wrap">
+              <Link href="/courses">
+                <Button size="lg" className="flex items-center gap-2">
+                  Explore Courses <ArrowRight size={18} />
+                </Button>
+              </Link>
+
+              {/* WhatsApp Watch Demo Button */}
+              <Button
+                size="lg"
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={() =>
+                  window.open(
+                    "https://wa.me/923276315315?text=Hello!%20I%20want%20to%20get%20information%20about%20the%20course%20offerings%20at%20Designer's%20Hub.",
+                    "_blank",
+                  )
+                }
+              >
+                <FaWhatsapp size={20} className="text-green-500" />
+                WhatsApp Us
+              </Button>
+            </div>
+
+            {/* STATS */}
+            <div className="mt-14 flex gap-12 flex-wrap">
+              <Stat icon={<Users />} value="1,500+" label="Students" />
+              <Stat icon={<BookOpen />} value="10+" label="Courses" />
+              <Stat icon={<BadgeCheck />} value="98%" label="Success Rate" />
+            </div>
+          </div>
+
+          {/* RIGHT SIDE PREMIUM CARD */}
+          <div className="relative flex justify-center lg:justify-end mt-16 lg:mt-0">
+            <div
+              className="hidden sm:block absolute inset-0 translate-x-6 translate-y-6 
+                  rounded-[32px] bg-gradient-to-br 
+                  from-indigo-600 to-purple-600 
+                  blur-2xl opacity-30"
+            ></div>
+
+            <div className="relative w-full max-w-md sm:max-w-lg lg:max-w-[480px]">
+              {/* Main Card */}
+              <div
+                className="relative bg-white/90 backdrop-blur-xl 
+                    rounded-3xl sm:rounded-[32px] 
+                    p-6 sm:p-8 lg:p-10
+                    shadow-[0_25px_70px_rgba(79,70,229,0.25)]"
+              >
+                {/* Icon */}
+                <div
+                  className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-6 
+             rounded-2xl 
+             bg-gradient-to-br from-indigo-500 to-purple-600 
+             flex items-center justify-center 
+             text-white shadow-lg"
+                >
+                  <Sparkles className="w-8 h-8 sm:w-10 sm:h-10" />
+                </div>
+
+                <h3 className="text-xl sm:text-2xl font-bold text-center text-gray-900 mb-3">
+                  Start Learning Today
+                </h3>
+
+                <p className="text-center text-gray-600 text-sm sm:text-base mb-6 sm:mb-8">
+                  Select a course, make payment, and begin your journey
+                </p>
+
+                {/* Steps */}
+                <div className="space-y-3 sm:space-y-4">
+                  {[
+                    "Browse & Select Course",
+                    "Complete Payment",
+                    "Register & Start Learning",
+                  ].map((step, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-3 sm:gap-4 
+                       bg-gray-100/80 
+                       p-3 sm:p-4 
+                       rounded-xl"
+                    >
+                      <span
+                        className="w-8 h-8 sm:w-9 sm:h-9 
+                             flex items-center justify-center 
+                             bg-yellow-400 text-gray-900 
+                             font-bold rounded-full text-sm"
+                      >
+                        {i + 1}
+                      </span>
+                      <p className="font-medium text-gray-800 text-sm sm:text-base">
+                        {step}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                <div
+                  className="relative sm:absolute 
+                      mt-6 sm:mt-0
+                      sm:-bottom-6 sm:left-6 
+                      bg-white shadow-xl 
+                      rounded-2xl 
+                      px-4 sm:px-6 py-3 sm:py-4 
+                      flex items-center gap-3 w-fit"
+                >
+                  <div className="flex -space-x-2">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-100 rounded-full"></div>
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-100 rounded-full"></div>
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-100 rounded-full"></div>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900 text-xs sm:text-sm">
+                      1,500+ Students
+                    </p>
+                    <p className="text-[10px] sm:text-xs text-gray-500">
+                      Enrolled this year
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Floating Courses Badge */}
+              <div
+                className="absolute 
+                    top-0 right-0 
+                    sm:-top-8 sm:-right-8
+                    bg-yellow-400 text-gray-900 
+                    px-4 sm:px-6 
+                    py-3 sm:py-5 
+                    rounded-xl sm:rounded-2xl 
+                    shadow-xl text-center"
+              >
+                <p className="text-lg sm:text-2xl font-bold">10+</p>
+                <p className="text-xs sm:text-sm">Courses</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
-          <div className="flex flex-col md:flex-row justify-center items-center space-y-8 md:space-y-0 md:space-x-8">
-            <div className="text-center">
-              <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-blue-600">1</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Select Course</h3>
-              <p className="text-gray-600">Choose from our range of design courses</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-blue-600">2</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Pay Fees</h3>
-              <p className="text-gray-600">Secure payment for your selected course</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-blue-600">3</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Register & Start Learning</h3>
-              <p className="text-gray-600">Create account and begin your journey</p>
-            </div>
+      {/* ================= COURSES ================= */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <span className="text-xs bg-indigo-100 text-indigo-600 px-4 py-1 rounded-full font-semibold">
+              Popular Courses
+            </span>
+            <h2 className="text-4xl font-extrabold mt-4 text-gray-900">
+              Explore Our <span className="text-indigo-600">Top Courses</span>
+            </h2>
+            <p className="text-gray-700 mt-4 max-w-2xl mx-auto">
+              Specialized short courses designed to transform your skills.
+            </p>
           </div>
-        </div>
-      </section>
 
-      {/* Courses Preview */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-12">Featured Courses</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
             {featuredCourses.map((course) => (
               <CourseCard key={course.id} course={course} />
+            ))}
+          </div>
+
+          <div className="text-center mt-14">
+            <Link href="/courses">
+              <Button variant="outline" size="lg">
+                View All Courses →
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= WHY CHOOSE ================= */}
+      <section className="py-24 bg-[#f8fafc]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-extrabold text-gray-900">
+              A Unique Approach to{" "}
+              <span className="text-indigo-600">Learning</span>
+            </h2>
+            <p className="text-gray-700 mt-4 max-w-3xl mx-auto">
+              We prioritize commitment and quality over volume.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {FEATURES.map((f, i) => {
+              const Icon = f.icon;
+              return (
+                <Card
+                  key={i}
+                  className="p-8 rounded-2xl shadow-sm hover:shadow-md transition"
+                >
+                  <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 mb-4">
+                    <Icon size={26} />
+                  </div>
+
+                  <h3 className="font-semibold text-lg mb-2 text-gray-900">
+                    {f.title}
+                  </h3>
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    {f.description}
+                  </p>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= HOW IT WORKS ================= */}
+      <section className="py-28 bg-gradient-to-br from-[#0f172a] to-[#020617] text-white">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <span className="inline-block bg-yellow-400 text-black text-xs font-semibold px-4 py-1 rounded-full">
+            How It Works
+          </span>
+
+          <h2 className="text-4xl font-extrabold mt-6">
+            Your Journey to <span className="text-yellow-400">Excellence</span>
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mt-16">
+            {HOW_IT_WORKS.map((item, i) => {
+              const Icon = item.icon;
+              return (
+                <Card key={i} variant="glass" className="p-8 text-left">
+                  <div className="w-12 h-12 flex items-center justify-center rounded-full bg-yellow-400 text-black mb-4">
+                    <Icon size={24} />
+                  </div>
+
+                  <h3 className="font-semibold mb-2 text-white">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-gray-200 leading-relaxed">
+                    {item.desc}
+                  </p>
+                </Card>
+              );
+            })}
+          </div>
+
+          <Button variant="yellow" size="xl" className="mt-14">
+            Start Your Journey →
+          </Button>
+        </div>
+      </section>
+
+      {/* ================= TESTIMONIALS ================= */}
+      <section className="py-24 bg-[#f9fafb]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-extrabold text-gray-900">
+              What Our Students Say
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {TESTIMONIALS.map((t, i) => (
+              <Card key={i} className="p-8 rounded-3xl shadow-md">
+                <CardContent>
+                  <p className="italic text-gray-700 mb-6">"{t.content}"</p>
+                  <p className="font-semibold text-gray-900">{t.name}</p>
+                  <p className="text-sm text-gray-600">{t.role}</p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>

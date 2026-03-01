@@ -1,127 +1,199 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { useAuth } from '../src/contexts/AuthContext';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useAuth } from "../src/contexts/AuthContext";
+import { Button } from "../src/components/ui/Button";
+import { Input } from "../src/components/ui/Input";
+import { Label } from "../src/components/ui/Label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../src/components/ui/Card";
 
 export default function Login() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [success, setSuccess] = useState("");
   const router = useRouter();
   const { login, isLoggedIn, isLoading: authLoading } = useAuth();
 
   useEffect(() => {
-    if (!authLoading && isLoggedIn) {
-      router.push('/dashboard');
-    }
+    if (!authLoading && isLoggedIn) router.push("/dashboard");
   }, [isLoggedIn, authLoading, router]);
 
-  if (authLoading) {
-    return <div className="py-16 bg-gray-50 flex justify-center items-center">Loading...</div>;
-  }
-
-  if (isLoggedIn) {
-    return null; // Will redirect
-  }
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const validateField = (name: string, value: string) => {
+    switch (name) {
+      case "email":
+        if (!value.trim()) return "Email is required";
+        if (!/\S+@\S+\.\S+/.test(value)) return "Invalid email address";
+        return "";
+      case "password":
+        if (!value.trim()) return "Password is required";
+        if (value.length < 6) return "Password must be at least 6 characters";
+        return "";
+      default:
+        return "";
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSuccess("");
+
+    // Validate
+    const newErrors = {
+      email: validateField("email", formData.email),
+      password: validateField("password", formData.password),
+    };
+    setErrors(newErrors);
+    if (Object.values(newErrors).some((err) => err !== "")) return;
+
     setIsLoading(true);
-    setError('');
-
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
+      const data = await res.json();
 
-      const data = await response.json();
-
-      if (response.ok) {
+      if (res.ok) {
+        setSuccess("Login successful! Redirecting...");
         login(data.user);
-        router.push('/dashboard');
+        setTimeout(() => router.push("/dashboard"), 1500);
       } else {
-        setError(data.error || 'Invalid credentials');
+        setErrors((prev) => ({
+          ...prev,
+          email: data.error || "Invalid credentials",
+        }));
       }
-    } catch (err) {
-      setError('Network error. Please try again.');
+    } catch {
+      setErrors((prev) => ({ ...prev, email: "Network error. Try again." }));
     } finally {
       setIsLoading(false);
     }
   };
 
+  const getInputClass = (field: keyof typeof formData) =>
+    errors[field]
+      ? "mt-1 border-red-500 focus:ring-red-500"
+      : "mt-1 hover:border-purple-500 focus:ring-purple-500";
+
   return (
-    <div className="py-16 bg-gray-50">
-      <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
-
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-4">
-            {error}
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-gradient-to-br from-gray-100 to-indigo-200">
+      <div className="flex flex-col items-center mb-8 text-center">
+        <Link
+          href="/"
+          className="flex items-center gap-3 group whitespace-nowrap"
+        >
+          <img
+            src="/designer.png"
+            alt="Designer's Hub Logo"
+            className="w-12 h-12 object-contain transition-transform duration-300 group-hover:scale-110"
+          />
+          <div className="flex items-center gap-3">
+            <span className="h-8 w-[2px] bg-black rounded-full"></span>
+            <div className="flex flex-col leading-tight text-2xl font-bold tracking-tight text-black group-hover:text-indigo-600 transition-colors duration-300">
+              Designer’s Hub
+            </div>
           </div>
-        )}
+        </Link>
+        <p className="text-gray-600 mt-1">
+          Sign in to continue your design journey
+        </p>
+      </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-          <div className="mb-6">
-            <label className="block text-gray-700 mb-2">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
+      {/* Card */}
+      <Card
+        variant="elevated"
+        className="w-full max-w-md animate-scaleIn shadow-lg"
+      >
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">Sign In</CardTitle>
+          <CardDescription>
+            Enter your credentials to access your account
+          </CardDescription>
+        </CardHeader>
 
-        <div className="mt-6 text-center">
-          <p className="text-gray-600">
-            Don't have an account?{' '}
-            <Link href="/register" className="text-blue-600 hover:text-blue-500">
-              Sign up here
-            </Link>
-          </p>
-          <p className="text-gray-600 mt-2">
-            <Link href="/forgot-password" className="text-blue-600 hover:text-blue-500">
+        <CardContent>
+          {success && (
+            <div className="flex items-center gap-2 bg-success/10 border border-success/20 text-success px-4 py-3 rounded-lg mb-4">
+              ✓ {success}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {(["email", "password"] as (keyof typeof formData)[]).map(
+              (field) => (
+                <div key={field}>
+                  <Label htmlFor={field}>
+                    {field === "password" ? "Password" : "Email Address"}
+                  </Label>
+                  <Input
+                    id={field}
+                    name={field}
+                    type={field === "password" ? "password" : "email"}
+                    value={formData[field]}
+                    onChange={handleChange}
+                    placeholder={
+                      field === "password"
+                        ? "Enter your password"
+                        : "Enter your email"
+                    }
+                    className={getInputClass(field)}
+                  />
+                  {errors[field] && (
+                    <p className="mt-1 text-red-600 text-sm">{errors[field]}</p>
+                  )}
+                </div>
+              ),
+            )}
+
+            <Button
+              type="submit"
+              size="lg"
+              variant="gradient"
+              disabled={isLoading}
+              className="w-full flex items-center justify-center gap-2"
+            >
+              {isLoading ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              ) : (
+                "Sign In"
+              )}
+            </Button>
+          </form>
+
+          <div className="mt-6 text-center space-y-2 text-sm">
+            <Link
+              href="/forgot-password"
+              className="text-purple-600 hover:text-purple-700 font-medium block"
+            >
               Forgot your password?
             </Link>
-          </p>
-        </div>
-      </div>
+            <div className="text-neutral-600">
+              Don't have an account?{" "}
+              <Link
+                href="/register"
+                className="text-purple-600 hover:text-purple-700 font-medium"
+              >
+                Sign up here
+              </Link>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

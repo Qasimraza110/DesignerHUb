@@ -97,7 +97,7 @@ export default function About() {
           {/* Right Image */}
           <div className="relative">
             <Image
-              src="/skills.jfif"
+              src="/skills.jpg"
               alt="Team Working"
               width={600}
               height={400}
@@ -156,22 +156,26 @@ export default function About() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 justify-center">
-  {[{ name: "Syed Muhammad Ali", role: "Founder & CEO", img: "/ali.jpeg" }].map(
-    (member, index) => (
-      <div key={index} className="text-center">
-        <Image
-          src={member.img}
-          alt={member.name}
-          width={250}
-          height={250}
-          className="rounded-xl mx-auto mb-4 object-cover"
-        />
-        <h3 className="font-semibold text-gray-900">{member.name}</h3>
-        <p className="text-indigo-600 text-sm">{member.role}</p>
-      </div>
-    ),
-  )}
-</div>
+          {[
+            {
+              name: "Syed Muhammad Ali",
+              role: "Founder & CEO",
+              img: "/ali.jpeg",
+            },
+          ].map((member, index) => (
+            <div key={index} className="text-center">
+              <Image
+                src={member.img}
+                alt={member.name}
+                width={250}
+                height={250}
+                className="rounded-xl mx-auto mb-4 object-cover"
+              />
+              <h3 className="font-semibold text-gray-900">{member.name}</h3>
+              <p className="text-indigo-600 text-sm">{member.role}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

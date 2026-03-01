@@ -7,9 +7,9 @@ export async function POST(request: NextRequest) {
   try {
     await connectToDatabase();
 
-    const { fullName, email, password, course } = await request.json();
+    const { fullName, email, password } = await request.json();
 
-    if (!fullName || !email || !password || !course) {
+    if (!fullName || !email || !password) {
       return NextResponse.json(
         { error: 'All fields are required' },
         { status: 400 }
@@ -31,7 +31,6 @@ export async function POST(request: NextRequest) {
       fullName,
       email,
       password: hashedPassword,
-      course,
     });
 
     await newUser.save();
@@ -40,7 +39,6 @@ export async function POST(request: NextRequest) {
       id: newUser._id.toString(),
       fullName: newUser.fullName,
       email: newUser.email,
-      course: newUser.course,
     };
 
     return NextResponse.json({

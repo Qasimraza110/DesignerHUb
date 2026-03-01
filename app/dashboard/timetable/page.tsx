@@ -14,15 +14,15 @@ import { STUDENT_SIDEBAR_ITEMS } from "../../src/constants/sidebar";
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 export default function DashboardTimetablePage() {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, isLoading } = useAuth();
   const { approvedPayments, pendingPayments, loading } = usePayments();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!isLoading && !isLoggedIn) {
       router.push('/register');
     }
-  }, [isLoggedIn, router]);
+  }, [isLoggedIn, isLoading, router]);
 
   if (!isLoggedIn) {
     return null;

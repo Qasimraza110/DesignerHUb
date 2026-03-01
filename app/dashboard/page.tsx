@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../src/contexts/AuthContext";
 import { usePayments } from "../src/contexts/PaymentContext";
 import Sidebar from "../src/components/Sidebar";
@@ -22,15 +22,30 @@ import {
 } from "react-icons/fi";
 
 export default function Dashboard() {
-  const { user, isLoggedIn } = useAuth();
-  const { approvedPayments, pendingPayments, loading } = usePayments();
+  const { user, isLoggedIn, isLoading } = useAuth();
+  const { approvedPayments, pendingPayments, rejectedPayments, loading } =
+    usePayments();
   const router = useRouter();
+  const [visibleRejectedPayments, setVisibleRejectedPayments] = useState(
+    rejectedPayments.map((p) => ({ ...p, timestamp: Date.now() })),
+  );
+
+  // Hide rejected payments after 15 minutes (900,000 ms)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setVisibleRejectedPayments((prev) =>
+        prev.filter((p) => Date.now() - p.timestamp < 15 * 60 * 1000),
+      );
+    }, 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!isLoading && !isLoggedIn) {
       router.push("/register");
     }
-  }, [isLoggedIn, router]);
+  }, [isLoggedIn, isLoading, router]);
 
   if (!isLoggedIn) {
     return null;
@@ -57,6 +72,7 @@ export default function Dashboard() {
         items={STUDENT_SIDEBAR_ITEMS}
         enrolledCourses={approvedPayments.length}
         pendingPayments={pendingPayments.length}
+        rejectedPayments={rejectedPayments.length}
         completedCourses={0}
         className="lg:w-80 w-90 lg:h-screen lg:sticky lg:top-0"
       />
@@ -95,6 +111,34 @@ export default function Dashboard() {
                 <p className="text-yellow-700 text-sm">
                   You have {pendingPayments.length} payment(s) awaiting
                   approval.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {visibleRejectedPayments.length > 0 && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl transition-all duration-300">
+            <div className="flex items-center gap-3">
+              <svg
+                className="w-5 h-5 text-red-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+                />
+              </svg>
+              <div>
+                <h3 className="font-semibold text-red-800">Payment Rejected</h3>
+                <p className="text-red-700 text-sm">
+                  You had {visibleRejectedPayments.length} rejected payment(s).
+                  This alert will disappear after 15 minutes. Please contact
+                  support if needed.
                 </p>
               </div>
             </div>

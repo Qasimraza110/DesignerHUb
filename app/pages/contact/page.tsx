@@ -27,6 +27,7 @@ export default function Contact() {
   });
 
   const [success, setSuccess] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -75,16 +76,38 @@ export default function Contact() {
     return isValid;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      setSuccess("Message sent successfully!");
-      setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
+    if (!validateForm()) return;
+
+    setIsLoading(true);
+    setSuccess("");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccess("Message sent successfully! We'll get back to you soon.");
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+        });
+      } else {
+        setErrors({ ...errors, email: data.error || "Failed to send message. Please try again." });
+      }
+    } catch (error) {
+      console.error("Contact form error:", error);
+      setErrors({ ...errors, email: "Network error. Please try again." });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -226,9 +249,19 @@ export default function Contact() {
 
               <button
                 type="submit"
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition"
+                disabled={isLoading}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition"
               >
-                <Send size={16} /> Send Message
+                {isLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send size={16} /> Send Message
+                  </>
+                )}
               </button>
 
               {/* ✅ Success message */}

@@ -16,6 +16,7 @@ interface PaymentContextType {
   loading: boolean;
   approvedPayments: Payment[];
   pendingPayments: Payment[];
+  rejectedPayments: Payment[];
   refreshPayments: () => Promise<void>;
 }
 
@@ -56,12 +57,14 @@ export function PaymentProvider({ children }: { children: React.ReactNode }) {
 
   const approvedPayments = payments.filter((p) => p.status === 'approved');
   const pendingPayments = payments.filter((p) => p.status === 'pending');
+  const rejectedPayments = payments.filter((p) => p.status === 'rejected');
 
   const value: PaymentContextType = {
     payments,
     loading,
     approvedPayments,
     pendingPayments,
+    rejectedPayments,
     refreshPayments,
   };
 

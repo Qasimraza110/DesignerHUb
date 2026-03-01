@@ -12,16 +12,16 @@ import { STUDENT_SIDEBAR_ITEMS } from "../../src/constants/sidebar";
 import Link from "next/link";
 
 export default function EnrolledCoursesPage() {
-  const { user, isLoggedIn } = useAuth();
+  const { user, isLoggedIn, isLoading } = useAuth();
   const { payments, approvedPayments, pendingPayments, loading } =
     usePayments();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!isLoading && !isLoggedIn) {
       router.push("/register");
     }
-  }, [isLoggedIn, router]);
+  }, [isLoggedIn, isLoading, router]);
 
   if (!isLoggedIn) {
     return null;

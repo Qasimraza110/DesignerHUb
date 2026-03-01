@@ -46,6 +46,7 @@ function PaymentContent() {
         fullName: user.fullName || "",
         email: user.email || "",
         course: searchParams.get("course") || "",
+        amount: searchParams.get("amount") || "",
       }));
     }
   }, [user, searchParams]);
@@ -57,7 +58,7 @@ function PaymentContent() {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" })); 
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -240,9 +241,12 @@ function PaymentContent() {
                   onChange={handleChange}
                   className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="bank">Bank Transfer</option>
-                  <option value="jazzcash">JazzCash</option>
-                  <option value="easypaisa">EasyPaisa</option>
+                  <option value="bank">
+                    Bank Transfer (11680112593777 Mezan Syed Muhammad Ali)
+                  </option>
+                  <option value="jazzcash">
+                    JazzCash (+92 326 9765162 Syed Muhammad Ali)
+                  </option>
                 </select>
               </div>
 

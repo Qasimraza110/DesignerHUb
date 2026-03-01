@@ -10,6 +10,7 @@ interface SidebarProps {
   items: SidebarItem[];
   enrolledCourses?: number;
   pendingPayments?: number;
+  rejectedPayments?: number;
   completedCourses?: number;
   className?: string;
 }
@@ -18,6 +19,7 @@ const Sidebar = React.memo(function Sidebar({
   items,
   enrolledCourses = 0,
   pendingPayments = 0,
+  rejectedPayments = 0,
   completedCourses = 0,
   className = "",
 }: SidebarProps) {
@@ -121,6 +123,13 @@ const Sidebar = React.memo(function Sidebar({
                 <span className="text-gray-400">Pending Payments</span>
                 <span className="font-semibold text-yellow-400">
                   {pendingPayments}
+                </span>
+              </div>
+
+              <div className="flex justify-between">
+                <span className="text-gray-400">Rejected Payments</span>
+                <span className="font-semibold text-red-400">
+                  {rejectedPayments}
                 </span>
               </div>
 

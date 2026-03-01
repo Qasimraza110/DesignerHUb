@@ -20,10 +20,13 @@ export default function EnrolledCourseCard({
   const router = useRouter();
 
   const isActive = paymentStatus === "approved";
+  const isRejected = paymentStatus === "rejected";
 
   const statusStyles = isActive
     ? "bg-green-100 text-green-800"
-    : "bg-yellow-100 text-yellow-800";
+    : isRejected
+      ? "bg-red-100 text-red-800"
+      : "bg-yellow-100 text-yellow-800";
 
   return (
     <motion.div
@@ -51,7 +54,7 @@ export default function EnrolledCourseCard({
         <span
           className={`px-3 py-1 text-xs rounded-full font-semibold ${statusStyles}`}
         >
-          {isActive ? "Active" : "Pending"}
+          {isActive ? "Active" : isRejected ? "Rejected" : "Pending"}
         </span>
       </div>
 
@@ -74,7 +77,7 @@ export default function EnrolledCourseCard({
       <div className="flex gap-3">
         <button
           disabled={!isActive}
-          onClick={() => router.push(`/courses/${course.id}/roadmap`)}
+          onClick={() => router.push(`/dashboard/roadmap?course=${course.id}`)}
           className={`flex-1 text-sm py-2 px-4 rounded-md transition-colors ${
             isActive
               ? "bg-blue-600 text-white hover:bg-blue-700"

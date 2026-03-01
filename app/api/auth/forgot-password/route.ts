@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     user.resetPasswordExpires = expires;
     await user.save();
 
-    const resetUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/reset-password?token=${resetToken}`;
+    const resetUrl = `${process.env.NEXT_PUBLIC_BASE_URL ||'http://localhost:3000'}/reset-password?token=${resetToken}`;
 
     const mailOptions = {
       from: `"Designer's Hub" <${process.env.SMTP_USER || 'noreply@designershub.com'}>`,

@@ -9,7 +9,6 @@ import {
   Facebook,
   Instagram,
   Linkedin,
-  Twitter,
 } from "lucide-react";
 
 export default function Contact() {
@@ -27,12 +26,15 @@ export default function Contact() {
     message: "",
   });
 
+  const [success, setSuccess] = useState("");
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    setErrors({ ...errors, [name]: "" }); // clear error when typing
+    setErrors({ ...errors, [name]: "" });
+    setSuccess("");
   };
 
   const validateForm = () => {
@@ -76,7 +78,7 @@ export default function Contact() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      alert("Message sent successfully!");
+      setSuccess("Message sent successfully!");
       setFormData({
         name: "",
         email: "",
@@ -108,11 +110,7 @@ export default function Contact() {
         {/* ===== TOP INFO CARDS ===== */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
           {[
-            {
-              icon: MapPin,
-              title: "Visit Us",
-              text: "Gulshan Ravi Lahore",
-            },
+            { icon: MapPin, title: "Visit Us", text: "Gulshan Ravi Lahore" },
             {
               icon: Mail,
               title: "Email Us",
@@ -232,6 +230,11 @@ export default function Contact() {
               >
                 <Send size={16} /> Send Message
               </button>
+
+              {/* ✅ Success message */}
+              {success && (
+                <p className="text-green-600 text-center mt-4">{success}</p>
+              )}
             </form>
           </div>
 
@@ -252,7 +255,7 @@ export default function Contact() {
               <h3 className="font-semibold text-gray-900 mb-4">Follow Us</h3>
 
               <div className="flex gap-4 text-gray-500">
-                <Facebook className=" hover:text-indigo-600" />
+                <Facebook className="hover:text-indigo-600" />
                 <Instagram className="hover:text-indigo-600" />
                 <Linkedin className="hover:text-indigo-600" />
               </div>
@@ -279,9 +282,7 @@ export default function Contact() {
                   <p className="font-medium text-gray-700">
                     What payment methods are accepted?
                   </p>
-                  <p>
-                    We accept Bank Transfer, JazzCash
-                  </p>
+                  <p>We accept Bank Transfer, JazzCash</p>
                 </div>
               </div>
             </div>

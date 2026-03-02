@@ -25,7 +25,7 @@ export default function Footer() {
               className="flex items-center gap-3 group whitespace-nowrap"
             >
               <img
-                src="/designer.png"
+                src="/designer2.png"
                 alt="Designer's Hub Logo"
                 className="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-110"
               />

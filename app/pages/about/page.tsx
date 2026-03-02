@@ -162,6 +162,12 @@ export default function About() {
               role: "Founder & CEO",
               img: "/ali.jpeg",
             },
+      {
+              name: "Qasim Raza",
+              role: "CTO & Junior Software Engineer",
+              img: "/qasim.jpeg",
+            },
+      
           ].map((member, index) => (
             <div key={index} className="text-center">
               <Image

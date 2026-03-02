@@ -58,7 +58,7 @@ export const FEATURES = [
   },
   {
     title: "Structured Curriculum",
-    description: "Well-organized lessons from basics to advanced level.",
+    description: "Well-organized lessons from basics to advanced level According to market trends.",
     icon: Layers,
   },
   {

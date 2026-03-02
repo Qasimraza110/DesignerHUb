@@ -251,7 +251,7 @@ export default function About() {
       img: "/ali.jpeg",
     },
     {
-      name: "Qasim Raza",
+      name: "Sheikh Qasim Raza",
       role: "CTO & Junior Software Engineer",
       img: "/qasim.jpeg",
     },

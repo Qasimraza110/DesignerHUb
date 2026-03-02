@@ -155,33 +155,35 @@ export default function About() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 justify-center">
-          {[
-            {
-              name: "Syed Muhammad Ali",
-              role: "Founder & CEO",
-              img: "/ali.jpeg",
-            },
-      {
-              name: "Qasim Raza",
-              role: "CTO & Junior Software Engineer",
-              img: "/qasim.jpeg",
-            },
-      
-          ].map((member, index) => (
-            <div key={index} className="text-center">
-              <Image
-                src={member.img}
-                alt={member.name}
-                width={250}
-                height={250}
-                className="rounded-xl mx-auto mb-4 object-cover"
-              />
-              <h3 className="font-semibold text-gray-900">{member.name}</h3>
-              <p className="text-indigo-600 text-sm">{member.role}</p>
-            </div>
-          ))}
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-10 justify-center">
+  {[
+    {
+      name: "Syed Muhammad Ali",
+      role: "Founder & CEO",
+      img: "/ali.jpeg",
+    },
+    {
+      name: "Qasim Raza",
+      role: "CTO & Junior Software Engineer",
+      img: "/qasim.jpeg",
+    },
+  ].map((member, index) => (
+    <div key={index} className="text-center">
+      {/* Image wrapper with fixed size */}
+      <div className="w-[250px] h-[250px] mx-auto mb-4 relative rounded-xl overflow-hidden">
+        <Image
+          src={member.img}
+          alt={member.name}
+          fill
+          className="object-cover"
+        />
+      </div>
+
+      <h3 className="font-semibold text-gray-900">{member.name}</h3>
+      <p className="text-indigo-600 text-sm">{member.role}</p>
+    </div>
+  ))}
+</div>
       </div>
     </div>
   );

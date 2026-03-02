@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { Users, BookOpen, Award, Target } from "lucide-react";
 
 export default function About() {
@@ -13,13 +12,15 @@ export default function About() {
           </span>
 
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mt-6">
-            Empowering Future <span className="text-indigo-600">Designers</span>
+            Empowering Future <span className="text-indigo-600">IT Professionals</span> in Just 3 Months
           </h1>
 
           <p className="text-gray-500 mt-6 max-w-2xl mx-auto">
-            Designer’s Hub is an elite online institute offering specialized
-            short computer courses. We prioritize commitment and quality to help
-            you achieve your career goals.
+            Designer’s Hub is a career-focused IT training institute built for
+            students who don’t just want certificates… they want skills,
+            confidence, and real-world opportunities. We specialize in practical,
+            market-aligned courses designed to transform beginners into job-ready
+            professionals within three months.
           </p>
         </div>
 
@@ -77,20 +78,22 @@ export default function About() {
             </span>
 
             <h2 className="text-3xl font-bold text-gray-900 mt-6 mb-6">
-              Where Skill Meets Opportunity
+              To Bridge Learning & Industry
             </h2>
 
             <p className="text-gray-600 mb-6">
-              Our mission is to bridge the gap between aspiring designers and
-              industry demands. We provide hands-on, practical training that
-              prepares students for real-world challenges.
+              To bridge the gap between traditional learning and industry demand,
+              we provide hands-on IT education that prepares students for
+              freelancing, internships, and professional careers. Education should
+              not stop at theory—it should build portfolios, confidence, and
+              earning potential.
             </p>
 
             <ul className="space-y-3 text-gray-600">
-              <li>✔ Industry-relevant curriculum</li>
-              <li>✔ Hands-on project experience</li>
-              <li>✔ Career guidance & placement</li>
-              <li>✔ Lifetime learning access</li>
+              <li>✔ Market-aligned curriculum</li>
+              <li>✔ Portfolio development</li>
+              <li>✔ Internship opportunities</li>
+              <li>✔ Practical learning environment</li>
             </ul>
           </div>
 
@@ -110,24 +113,36 @@ export default function About() {
           </div>
         </div>
 
-        {/* ===== VALUES SECTION ===== */}
+        {/* ===== WHAT MAKES US DIFFERENT ===== */}
         <div className="text-center mb-20">
           <span className="text-sm text-indigo-600 font-medium bg-indigo-50 px-4 py-1 rounded-full">
-            Our Values
+            What Makes Us Different
           </span>
 
           <h2 className="text-3xl font-bold text-gray-900 mt-6">
-            What We Stand For
+            Why Choose Designer's Hub
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-24">
           {[
-            "Quality Education",
-            "Student Success",
-            "Innovation",
-            "Community",
-          ].map((title, index) => (
+            {
+              title: "Market-Aligned Curriculum",
+              desc: "Our course outlines follow current industry trends. Students learn what the market actually requires.",
+            },
+            {
+              title: "Portfolio Development",
+              desc: "Work on real projects to create a professional portfolio ready to showcase to clients or employers.",
+            },
+            {
+              title: "Internship Opportunities",
+              desc: "Top-performing students get internship opportunities to gain real work experience.",
+            },
+            {
+              title: "Practical Learning Environment",
+              desc: "Hands-on training, project-based tasks, and mentorship to apply skills in real scenarios.",
+            },
+          ].map((item, index) => (
             <div
               key={index}
               className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center"
@@ -135,13 +150,86 @@ export default function About() {
               <div className="w-10 h-10 mx-auto mb-4 flex items-center justify-center bg-indigo-100 text-indigo-600 font-bold rounded-full">
                 {index + 1}
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">{title}</h3>
-              <p className="text-gray-500 text-sm">
-                We continuously strive to deliver the highest standards in
-                learning.
-              </p>
+              <h3 className="font-semibold text-gray-900 mb-2">{item.title}</h3>
+              <p className="text-gray-500 text-sm">{item.desc}</p>
             </div>
           ))}
+        </div>
+
+        {/* ===== PROGRAMS ===== */}
+        <div className="text-center mb-20">
+          <span className="text-sm text-indigo-600 font-medium bg-indigo-50 px-4 py-1 rounded-full">
+            Our Programs
+          </span>
+
+          <h2 className="text-3xl font-bold text-gray-900 mt-6">
+            Intensive 3-Month Programs
+          </h2>
+
+          <p className="text-gray-500 mt-4 max-w-2xl mx-auto">
+            We currently offer intensive 3-month programs in:
+          </p>
+
+          <ul className="mt-6 space-y-2 text-gray-600">
+            <li>• Graphic Designing</li>
+            <li>• Freelancing</li>
+            <li>• App Development</li>
+          </ul>
+
+          <p className="text-gray-500 mt-4 max-w-2xl mx-auto">
+            Each course is designed to build technical expertise along with professional confidence.
+          </p>
+        </div>
+
+        {/* ===== VISION ===== */}
+        <div className="text-center mb-20">
+          <span className="text-sm text-indigo-600 font-medium bg-indigo-50 px-4 py-1 rounded-full">
+            Our Vision
+          </span>
+
+          <h2 className="text-3xl font-bold text-gray-900 mt-6">
+            Shaping Competent IT Professionals
+          </h2>
+
+          <p className="text-gray-500 mt-4 max-w-2xl mx-auto">
+            To become a leading IT skill development institute that produces competent,
+            creative, and industry-ready professionals who can compete in the digital marketplace.
+          </p>
+        </div>
+
+        {/* ===== WHO WE SERVE ===== */}
+        <div className="text-center mb-20">
+          <span className="text-sm text-indigo-600 font-medium bg-indigo-50 px-4 py-1 rounded-full">
+            Who We Serve
+          </span>
+
+          <h2 className="text-3xl font-bold text-gray-900 mt-6">
+            Students, Beginners, and Freelancers
+          </h2>
+
+          <ul className="mt-6 space-y-2 text-gray-600">
+            <li>• Students who want career-oriented IT skills</li>
+            <li>• Individuals interested in freelancing</li>
+            <li>• Beginners looking to start a tech career</li>
+            <li>• Creative minds who want structured guidance</li>
+          </ul>
+        </div>
+
+        {/* ===== JOIN THE JOURNEY ===== */}
+        <div className="text-center mb-20">
+          <span className="text-sm text-indigo-600 font-medium bg-indigo-50 px-4 py-1 rounded-full">
+            Join the Journey
+          </span>
+
+          <h2 className="text-3xl font-bold text-gray-900 mt-6">
+            We Build Skills, Portfolios & Careers
+          </h2>
+
+          <p className="text-gray-500 mt-4 max-w-2xl mx-auto">
+            At Designer’s Hub, we don’t just teach software. We build skills. We
+            build portfolios. We build careers. If you're ready to turn your
+            potential into professional ability, your journey starts here.
+          </p>
         </div>
 
         {/* ===== LEADERSHIP ===== */}
@@ -155,7 +243,7 @@ export default function About() {
           </h2>
         </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10 justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 justify-center">
   {[
     {
       name: "Syed Muhammad Ali",
@@ -169,12 +257,13 @@ export default function About() {
     },
   ].map((member, index) => (
     <div key={index} className="text-center">
-      {/* Image wrapper with fixed size */}
-      <div className="w-[250px] h-[250px] mx-auto mb-4 relative rounded-xl overflow-hidden">
+      {/* Fixed size image */}
+      <div className="w-[250px] h-[250px] mx-auto mb-4 rounded-xl overflow-hidden">
         <Image
           src={member.img}
           alt={member.name}
-          fill
+          width={250}
+          height={250}
           className="object-cover"
         />
       </div>

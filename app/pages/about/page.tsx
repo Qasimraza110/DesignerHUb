@@ -157,7 +157,7 @@ export default function About() {
         </div>
 
         {/* ===== PROGRAMS ===== */}
-        <div className="text-center mb-20">
+        {/* <div className="text-center mb-20">
           <span className="text-sm text-indigo-600 font-medium bg-indigo-50 px-4 py-1 rounded-full">
             Our Programs
           </span>
@@ -179,7 +179,7 @@ export default function About() {
           <p className="text-gray-500 mt-4 max-w-2xl mx-auto">
             Each course is designed to build technical expertise along with professional confidence.
           </p>
-        </div>
+        </div> */}
 
         {/* ===== VISION ===== */}
         <div className="text-center mb-20">
@@ -198,7 +198,7 @@ export default function About() {
         </div>
 
         {/* ===== WHO WE SERVE ===== */}
-        <div className="text-center mb-20">
+        {/* <div className="text-center mb-20">
           <span className="text-sm text-indigo-600 font-medium bg-indigo-50 px-4 py-1 rounded-full">
             Who We Serve
           </span>
@@ -213,7 +213,7 @@ export default function About() {
             <li>• Beginners looking to start a tech career</li>
             <li>• Creative minds who want structured guidance</li>
           </ul>
-        </div>
+        </div> */}
 
         {/* ===== JOIN THE JOURNEY ===== */}
         <div className="text-center mb-20">
@@ -243,7 +243,7 @@ export default function About() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 justify-center">
   {[
     {
       name: "Syed Muhammad Ali",

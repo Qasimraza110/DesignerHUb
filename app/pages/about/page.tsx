@@ -252,7 +252,7 @@ export default function About() {
     },
     {
       name: "Sheikh Qasim Raza",
-      role: "CTO & Junior Software Engineer",
+      role: "Instructor/Admin Incharge",
       img: "/qasim.jpeg",
     },
   ].map((member, index) => (

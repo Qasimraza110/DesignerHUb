@@ -8,7 +8,7 @@ interface Course {
   id: number;
   title: string;
   duration: string;
-  price: string;
+  price: number;
   image: string;
   level?: string;
   category?: string;

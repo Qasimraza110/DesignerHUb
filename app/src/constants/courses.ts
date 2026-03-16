@@ -2,7 +2,7 @@ export interface Course {
   id: number;
   title: string;
   duration: string;
-  price: string; // in PKR
+  price: number; // in PKR
   image: string;
   description: string;
   level: 'Beginner' | 'Intermediate' | 'Advanced';
@@ -18,7 +18,7 @@ export const COURSES: Course[] = [
     id: 1,
     title: 'Graphic Designing',
     duration: '3 months',
-    price: '8000 PKR',
+    price: 8000,
     image: '/course1.jfif',
     description: 'Learn the basics of graphic design including color theory, typography, and composition.',
     level: 'Beginner',
@@ -41,7 +41,7 @@ export const COURSES: Course[] = [
     id: 2,
     title: 'Freelancing',
     duration: '3 months',
-    price: '4000 PKR',
+    price: 4000,
     image: '/course2.jfif',
     description: 'Learn how to start freelancing, get clients, and manage projects professionally.',
     level: 'Beginner',
@@ -66,7 +66,7 @@ export const COURSES: Course[] = [
     id: 3,
     title: 'Video Editing',
     duration: '3 months',
-    price: '10000 PKR',
+    price: 10000,
     image: '/course3.jfif',
     description: 'Master video editing with professional tools and real-world projects.',
     level: 'Intermediate',
@@ -91,7 +91,7 @@ export const COURSES: Course[] = [
     id: 4,
     title: 'MS Office',
     duration: '3 months',
-    price: '3000 PKR',
+    price: 3000,
     image: '/course4.jfif',
     description: 'Learn MS Word, Excel, PowerPoint, and Outlook for professional use.',
     level: 'Beginner',
@@ -115,7 +115,7 @@ export const COURSES: Course[] = [
     id: 5,
     title: 'Web Development',
     duration: '3 months',
-    price: '12000 PKR',
+    price: 12000,
     image: '/course5.jfif',
     description: 'Full-stack web development course covering HTML, CSS, JavaScript, and frameworks.',
     level: 'Intermediate',
@@ -139,7 +139,7 @@ export const COURSES: Course[] = [
     id: 6,
     title: 'App Development',
     duration: '3 months',
-    price: '12000 PKR',
+    price: 12000,
     image: '/course6.jfif',
     description: 'Learn mobile app development for Android and iOS using modern frameworks.',
     level: 'Intermediate',
@@ -164,7 +164,7 @@ export const COURSES: Course[] = [
     id: 7,
     title: 'UI/UX',
     duration: '3 months',
-    price: '15000 PKR',
+    price: 15000,
     image: '/course7.jfif',
     description: 'Master UI/UX design principles and create user-friendly designs.',
     level: 'Advanced',
@@ -188,7 +188,7 @@ export const COURSES: Course[] = [
     id: 8,
     title: 'Digital Marketing',
     duration: '3 months',
-    price: '7000 PKR',
+    price: 7000,
     image: '/course8.jfif',
     description: 'Learn SEO, social media marketing, Google Ads, and email marketing.',
     level: 'Beginner',
@@ -212,7 +212,7 @@ export const COURSES: Course[] = [
     id: 9,
     title: 'E-Commerce',
     duration: '3 months',
-    price: '7000 PKR',
+    price: 7000,
     image: '/course9.jfif',
     description: 'Learn to build online stores, manage products, and run e-commerce campaigns.',
     level: 'Intermediate',
@@ -235,7 +235,7 @@ export const COURSES: Course[] = [
     id: 10,
     title: 'Freelance Graphic Design',
     duration: '3 months',
-    price: '8000 PKR',
+    price: 8000,
     image: '/course10.jfif',
     description: 'Advanced graphic design for freelancers including real projects and portfolio building.',
     level: 'Advanced',

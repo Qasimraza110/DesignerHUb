@@ -34,6 +34,7 @@ export default function EnrolledCoursesPage() {
         items={STUDENT_SIDEBAR_ITEMS}
         enrolledCourses={approvedPayments.length}
         pendingPayments={pendingPayments.length}
+        rejectedPayments={rejectedPayments.length}
         completedCourses={0}
         className="lg:w-72 w-full lg:h-screen lg:sticky lg:top-0"
       />

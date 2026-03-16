@@ -95,7 +95,7 @@ export default function CourseCard({ course }: CourseCardProps) {
 
         {/* Bottom */}
         <div className="flex items-center justify-between">
-          <p className="text-indigo-600 font-bold text-xl">{course.price}</p>
+          <p className="text-indigo-600 font-bold text-xl">{course.price} PKR</p>
 
           {isLoggedIn ? (
             <Link href={`/payment?course=${encodeURIComponent(course.title)}&amount=${course.price}`}>

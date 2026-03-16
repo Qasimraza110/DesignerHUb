@@ -13,7 +13,7 @@ import Link from "next/link";
 
 export default function EnrolledCoursesPage() {
   const { user, isLoggedIn, isLoading } = useAuth();
-  const { payments, approvedPayments, pendingPayments,  rejectedPayments, loading } =
+  const { payments, approvedPayments, pendingPayments, rejectedPayments, loading } =
     usePayments();
   const router = useRouter();
 

@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (storedUser && isLoggedIn && loginTime) {
         const currentTime = Date.now();
-        const sessionDuration = 1 * 60 * 60 * 1000; 
+        const sessionDuration = 10 * 60 * 1000; // 10 minutes
 
         if (currentTime - parseInt(loginTime) < sessionDuration) {
           setUser(JSON.parse(storedUser));

@@ -98,7 +98,7 @@ export default function CourseCard({ course }: CourseCardProps) {
           <p className="text-indigo-600 font-bold text-xl">{course.price}</p>
 
           {isLoggedIn ? (
-            <Link href={`/payment?course=${encodeURIComponent(course.title)}`}>
+            <Link href={`/payment?course=${encodeURIComponent(course.title)}&amount=${course.price}`}>
               <Button size="sm" className="gap-1">
                 Enroll
                 <ArrowRight size={15} />

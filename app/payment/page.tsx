@@ -243,10 +243,10 @@ function PaymentContent() {
                   className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="bank">
-                    Bank Transfer (11680112593777 Mezan Syed Muhammad Ali)
+                    Bank Transfer (11680112593777 Mezan Bank -> Qasim raza)
                   </option>
                   <option value="jazzcash">
-                    JazzCash (+92 326 9765162 Syed Muhammad Ali)
+                    JazzCash (+92 326 9765162 -> Syed Muhammad Ali)
                   </option>
                 </select>
               </div>

@@ -155,7 +155,7 @@ export default function CourseDetailPage({ params }: CourseDetailPageProps) {
           className="mt-10 flex flex-col sm:flex-row gap-4"
         >
           <Link
-            href={`/payment?course=${encodeURIComponent(course.title)}`}
+          href={`/payment?course=${encodeURIComponent(course.title)}&amount=${course.price}`}
             className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-2xl text-center font-semibold hover:bg-blue-700 transition-all shadow-lg hover:shadow-2xl"
           >
             Enroll Now - {course.price}

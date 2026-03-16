@@ -150,19 +150,31 @@ function PaymentContent() {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-        <Card className="max-w-md text-center p-8">
-          <div className="text-green-500 text-6xl mb-4">✓</div>
-          <h2 className="text-2xl font-bold mb-4">
-            Payment Submitted Successfully!
-          </h2>
-          <p className="text-gray-600 mb-4">
-            Your payment has been submitted. You will receive a confirmation
-            email once approved.
-          </p>
-          <p className="text-gray-600">Redirecting to dashboard...</p>
-        </Card>
-      </div>
+     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-gray-50 px-4 gap-8">
+  {/* Logo Section */}
+  <div className="flex flex-col items-center md:items-start justify-center md:w-1/3">
+    <img
+      src="/designer.png"
+      alt="Designer's Hub Logo"
+      className="w-24 h-24 mb-4 object-contain"
+    />
+    <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      Designer’s Hub
+    </h1>
+  </div>
+
+  {/* Card Section */}
+  <Card className="max-w-md w-full text-center p-8 shadow-lg rounded-xl bg-white">
+    <div className="text-green-500 text-6xl mb-4">✓</div>
+    <h2 className="text-2xl font-bold mb-4">
+      Payment Submitted Successfully!
+    </h2>
+    <p className="text-gray-600 mb-4">
+      Your payment has been submitted. You will receive a confirmation email once approved.
+    </p>
+    <p className="text-gray-600">Redirecting to dashboard...</p>
+  </Card>
+</div>
     );
   }
 

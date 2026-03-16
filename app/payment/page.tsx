@@ -295,7 +295,7 @@ function PaymentContent() {
                   name="amount"
                   type="number"
                   value={formData.amount}
-                  onChange={handleChange}
+                  readOnly
                   className={errors.amount ? "border-red-500" : ""}
                 />
                 {errors.amount && (

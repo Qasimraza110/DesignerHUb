@@ -21,34 +21,38 @@ import {
   FiMessageCircle,
 } from "react-icons/fi";
 
+type RejectedPayment = {
+  course: string;
+  timestamp: number;
+};
+
 export default function Dashboard() {
   const { user, isLoggedIn, isLoading } = useAuth();
   const { approvedPayments, pendingPayments, rejectedPayments, loading } =
     usePayments();
   const router = useRouter();
- const [visibleRejectedPayments, setVisibleRejectedPayments] = useState(() => {
-  const stored = localStorage.getItem("rejectedPayments");
+const [visibleRejectedPayments, setVisibleRejectedPayments] = useState<RejectedPayment[]>(() => {
+  const stored = typeof window !== "undefined" ? localStorage.getItem("rejectedPayments") : null;
   if (stored) return JSON.parse(stored);
-  return rejectedPayments.map((p) => ({ ...p, timestamp: Date.now() }));
+  return rejectedPayments.map((p) => ({ course: p.course, timestamp: Date.now() }));
 });
 useEffect(() => {
-  localStorage.setItem(
-    "rejectedPayments",
-    JSON.stringify(visibleRejectedPayments)
-  );
-}, [visibleRejectedPayments]);
+  if (typeof window !== "undefined") {
+    localStorage.setItem("rejectedPayments", JSON.stringify(visibleRejectedPayments));
+  }
+}, [visibleRejectedPayments]);;
 
   // Hide rejected payments after 15 minutes (900,000 ms)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setVisibleRejectedPayments((prev) =>
-        prev.filter((p) => Date.now() - p.timestamp < 15 * 60 * 1000),
-      );
-    }, 60 * 1000);
+ useEffect(() => {
+  const interval = setInterval(() => {
+    setVisibleRejectedPayments((prev: RejectedPayment[]) =>
+      prev.filter((p) => Date.now() - p.timestamp < 15 * 60 * 1000)
+    );
+  }, 60 * 1000);
 
-    return () => clearInterval(interval);
-  }, []);
-
+  return () => clearInterval(interval);
+}, []);
+  
   useEffect(() => {
     if (!isLoading && !isLoggedIn) {
       router.push("/register");

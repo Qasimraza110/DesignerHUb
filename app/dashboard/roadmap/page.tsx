@@ -11,7 +11,7 @@ import { STUDENT_SIDEBAR_ITEMS } from "../../src/constants/sidebar";
 
 export default function DashboardRoadmapPage() {
   const { isLoggedIn, isLoading } = useAuth();
-  const { approvedPayments, pendingPayments,  rejectedPayments, loading } = usePayments();
+  const { approvedPayments, pendingPayments, rejectedPayments, loading } = usePayments();
   const router = useRouter();
 
   const [expandedCourseIds, setExpandedCourseIds] = useState<number[]>([]);

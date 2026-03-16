@@ -15,7 +15,7 @@ const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 export default function DashboardTimetablePage() {
   const { isLoggedIn, isLoading } = useAuth();
-  const { approvedPayments, pendingPayments,  rejectedPayments, loading } = usePayments();
+  const { approvedPayments, pendingPayments, rejectedPayments, loading } = usePayments();
   const router = useRouter();
 
   useEffect(() => {

@@ -199,7 +199,7 @@ function PaymentContent() {
                     name="fullName"
                     value={formData.fullName}
                     onChange={handleChange}
-                    className={errors.fullName ? "border-red-500" : ""}
+                     className={`bg-gray-100 ${errors.fullName ? "border-red-500" : ""}`}
                   />
                   {errors.fullName && (
                     <p className="text-red-600 text-sm">{errors.fullName}</p>
@@ -214,7 +214,8 @@ function PaymentContent() {
                     type="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className={errors.email ? "border-red-500" : ""}
+                    className={`bg-gray-100 ${errors.email ? "border-red-500" : ""}`}
+
                   />
                   {errors.email && (
                     <p className="text-red-600 text-sm">{errors.email}</p>
@@ -296,11 +297,8 @@ function PaymentContent() {
                   type="number"
                   value={formData.amount}
                   readOnly
-                  className={errors.amount ? "border-red-500" : ""}
+                  className="bg-gray-100 cursor-not-allowed"
                 />
-                {errors.amount && (
-                  <p className="text-red-600 text-sm">{errors.amount}</p>
-                )}
               </div>
 
               <div className="flex flex-col">

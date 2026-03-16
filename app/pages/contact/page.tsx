@@ -28,6 +28,7 @@ export default function Contact() {
 
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState("");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -76,41 +77,44 @@ export default function Contact() {
     return isValid;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    setIsLoading(true);
-    setSuccess("");
+  // Validate form fields first
+  if (!validateForm()) return;
 
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+  setIsLoading(true);
+  setSuccess("");
+  setServerError(""); // Clear previous server errors
+
+  try {
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      setSuccess("Message sent successfully! We'll get back to you soon.");
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setSuccess("Message sent successfully! We'll get back to you soon.");
-        setFormData({
-          name: "",
-          email: "",
-          subject: "",
-          message: "",
-        });
-      } else {
-        setErrors({ ...errors, email: data.error || "Failed to send message. Please try again." });
-      }
-    } catch (error) {
-      console.error("Contact form error:", error);
-      setErrors({ ...errors, email: "Network error. Please try again." });
-    } finally {
-      setIsLoading(false);
+      setServerError(""); // clear any previous server error
+    } else {
+      setServerError(data.error || "Failed to send message. Please try again.");
     }
-  };
-
+  } catch (error) {
+    console.error("Contact form error:", error);
+    setServerError("Network error. Please try again.");
+  } finally {
+    setIsLoading(false);
+  }
+};
   return (
     <div className="bg-gray-50 min-h-screen py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -263,6 +267,9 @@ export default function Contact() {
                   </>
                 )}
               </button>
+              {serverError && (
+  <p className="text-red-500 text-center mt-4">{serverError}</p>
+)}
 
               {/* ✅ Success message */}
               {success && (

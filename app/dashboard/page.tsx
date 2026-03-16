@@ -26,9 +26,17 @@ export default function Dashboard() {
   const { approvedPayments, pendingPayments, rejectedPayments, loading } =
     usePayments();
   const router = useRouter();
-  const [visibleRejectedPayments, setVisibleRejectedPayments] = useState(
-    rejectedPayments.map((p) => ({ ...p, timestamp: Date.now() })),
+ const [visibleRejectedPayments, setVisibleRejectedPayments] = useState(() => {
+  const stored = localStorage.getItem("rejectedPayments");
+  if (stored) return JSON.parse(stored);
+  return rejectedPayments.map((p) => ({ ...p, timestamp: Date.now() }));
+});
+useEffect(() => {
+  localStorage.setItem(
+    "rejectedPayments",
+    JSON.stringify(visibleRejectedPayments)
   );
+}, [visibleRejectedPayments]);
 
   // Hide rejected payments after 15 minutes (900,000 ms)
   useEffect(() => {

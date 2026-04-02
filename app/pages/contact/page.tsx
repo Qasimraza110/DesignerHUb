@@ -283,7 +283,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             {/* MAP */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
               <iframe
-                src="https://www.google.com/maps?q=Lahore&output=embed"
+              src="https://www.google.com/maps?q=Gulshan%20Ravi,%20Lahore&output=embed"
                 width="100%"
                 height="250"
                 loading="lazy"
